@@ -1,225 +1,222 @@
-# System Design — AI House-Hunting Agent
+# System Design — AI House-Hunting Agent (v2)
 
-> Status: **design, awaiting approval.** Nothing below runs yet except where
-> marked ✅ *exists*.
+> Status: **design, awaiting approval.**
+> v2 change: humans use **only the web app or their own Claude Code**.
+> GitHub is where the product is *built* (source code, agent instructions),
+> never where it is *used*. No GitHub Issues, no GitHub Pages.
 
 ## 1. What we're building
 
-A small web app plus an AI agent. **You describe what you want in plain English.
-The agent reads it, searches the web for rentals, judges each one against
-your words, and keeps the dashboard up to date.** You and your friend
-discuss houses next to the listings, and the agent learns from what you say.
+A private web app for two people, powered by an AI agent:
 
-Traditional search tools filter on fields like `beds=3` and `price<5000`.
-They can't handle requirements like *"big enough that we're not on top of
-each other"*, *"quiet street"*, *"I'd trade a longer walk to Caltrain for a
-yard"*, or *"we hated #12 because it was dark"*. A language model can read
-both your words and the listing text and reason about how well they fit.
-That is the whole point of this system.
+- You describe what you want **in plain English**, inside the app.
+- The **agent** reads that, searches the web for rentals in Redwood City, San
+  Carlos and Menlo Park, judges each listing against your words, and keeps the
+  app up to date by itself.
+- You and your friend browse, comment, vote and upload tour photos **in the
+  app**, or just ask your own **Claude Code** ("what's new today?", "tell
+  Ken I like the Brittan Ave house"). Both routes read and write the same data.
 
-## 2. Design principles (from first principles)
+## 2. First principles → the key decision
 
-1. **Zero servers, zero hosting cost.** You both already use GitHub, so
-   GitHub is the database (git), the scheduler (Actions), the login (GitHub
-   accounts), the comment system (Issues) and the web host (Pages). Nothing
-   to maintain, nothing to pay for except the AI calls.
-2. **Plain files that agents can read.** Requirements, listings and the
-   agent's reasoning are Markdown or JSON in the repo. Your friend's AI agent
-   works with them the same way the scheduled agent does: edit a file or
-   comment on an issue.
-3. **Show the agent's reasoning.** For every house the agent shows *why* it
-   thinks the place fits, requirement by requirement, and how it understood
-   your English. If it misunderstood, you'll see that and can fix the wording.
-4. **Use AI only where it adds something.** Deterministic work stays plain
-   code: distance to Caltrain, geocoding, de-duplication, rendering. The model
-   handles understanding, searching and judging.
-5. **Cheap to run.** The agent only evaluates new or changed listings, and
-   each run has a hard cap on searches and tokens.
+What the product actually needs:
+
+| Need | Simplest thing that does it |
+|---|---|
+| A web UI two people can sign in to | A **claude.ai Artifact** (hosted web page, private, shared with your friend) |
+| Shared data: listings, comments, votes, requirements | The artifact's built-in **database** (`db`) |
+| Knowing who wrote what | The artifact's built-in **user** identity |
+| Tour photos and videos | The artifact's **asset storage** (≤ 20 MB per file) |
+| AI inside the page ("why does this fit us?") | The artifact's **ask-Claude** capability (`sample`) |
+| An agent that searches the web on a schedule | A **Claude Code Routine**: a scheduled Claude Code session in the cloud |
+| Your Claude Code talking to the same data | Claude Code's **ArtifactData** tool, which reads and writes the artifact's database |
+| A place to build and version the product | **GitHub** (this repo): app source + agent instructions |
+
+Why this beats the "classic" stack (Next.js + Supabase + a server + an API key):
+
+- **No servers, no hosting accounts, no database to run, no sign-in to build.**
+  claude.ai provides all of it.
+- **No Anthropic API key or per-call billing.** The agent runs as a Claude Code
+  routine on your existing Claude plan.
+- **Claude Code works natively.** Your agent and your friend's agent use the
+  same data the app uses, with no custom API or MCP server to build.
+
+**Trade-off:** the product lives inside claude.ai. Both of you need a claude.ai
+account, and it isn't a public website. That's right for two friends. If this
+ever becomes a product for other people, see §9 for the standalone version.
+The app source and agent logic in GitHub carry over.
 
 ## 3. Architecture
 
 ```mermaid
 flowchart LR
-  subgraph You["👥 You + friend (and your AI agents)"]
-    R[REQUIREMENTS.md<br/>plain English]
-    C[Issue comments<br/>👍 👎 status labels]
-    Q[“Ask the agent” issue]
+  subgraph People["👥 You + friend"]
+    UI["🌐 Web app<br/>(claude.ai artifact)"]
+    CC["💻 Your Claude Code<br/>(each person)"]
   end
 
-  subgraph Agent["🤖 Agent — GitHub Actions, 2× daily + on change"]
-    I[1 · Interpret<br/>English → Search Brief]
-    D[2 · Discover<br/>web search + fetch]
-    E[3 · Evaluate<br/>per-requirement verdicts]
-    M[4 · Maintain<br/>still available?]
-    P[5 · Publish ✅<br/>geocode · issues · build]
+  DB[("🗄️ Shared database<br/>requirements · listings · comments<br/>votes · decisions · requests · photos")]
+
+  subgraph Agent["🤖 Search agent — Claude Code Routine (cloud)"]
+    A1[Interpret requirements]
+    A2[Search web · extract]
+    A3[Evaluate vs requirements]
+    A4[Re-check availability]
+    A5[Answer requests]
   end
 
-  subgraph Store["📁 Repo (git = database)"]
-    B[data/brief.json]
-    L[data/listings.json]
-  end
+  GH["📦 GitHub repo<br/>(build only: app source,<br/>agent instructions)"]
 
-  W["🌐 Web app — GitHub Pages<br/>ranked cards · map · reasoning"]
-
-  R --> I --> B --> D --> L
-  C --> I
-  C --> E
-  L --> E --> L
-  L --> M --> L
-  L --> P --> W
-  Q --> D
-  W -- Discuss / vote --> C
-  W -- Edit requirements --> R
+  UI <--> DB
+  CC <--> DB
+  Agent <--> DB
+  GH -. deploys app .-> UI
+  GH -. instructions .-> Agent
+  UI -- "🔎 Search now (owner)" --> Agent
 ```
 
-### The agent pipeline (one run)
+## 4. The web app
 
-| Stage | What it does | How |
+One page, phone-friendly. Sign-in is automatic: it's your claude.ai account.
+
+- **Listings:** ranked cards with photo, rent (total and per person), beds and
+  baths, sqft, walking minutes to the nearest Caltrain station, and **fit
+  score**. Each card has the agent's 2-sentence take and an expandable
+  checklist: every requirement marked ✅ meets / ⚠️ partly / ❌ fails /
+  ❓ unknown, with a reason. Badges for 🆕 new, ⚠️ unverified and 💤 gone.
+- **On each listing:** a comment thread showing who said what, 👍/👎 from each
+  of you, a shared status (*interested → touring → applied*, or *rejected*),
+  photo and video upload from tours, and an **"Ask about this place"** box
+  where Claude answers in the page using the listing and your requirements.
+- **Requirements tab:** three plain-English boxes (*Shared*, *Me*, *Friend*)
+  plus *Deal-breakers*. Next to them, **"How the agent understood you"** (the
+  parsed brief), so a misunderstanding is visible and you can fix the wording.
+- **Ask the agent:** a box for one-off requests ("find anything with a garage
+  under $4,800 in San Carlos"). They go into a request queue that the agent
+  answers on its next run. The owner also gets a **🔎 Search now** button
+  that starts a run immediately.
+- **Map or proximity view:** listings plotted against the Caltrain stations.
+- **Activity:** last agent run, what it found, what it removed, and the
+  agent's replies to requests.
+
+## 5. The agent (Claude Code Routine)
+
+A scheduled cloud Claude Code session. It runs **twice a day**, plus whenever
+the owner presses *Search now*. Its instructions live in this repo
+(`agent/AGENT.md`), so improving the agent is a normal code change. Each run:
+
+1. **Read state** from the database: requirements, feedback (comments, votes,
+   rejections and their reasons), open requests, known listings.
+2. **Interpret** the English requirements into a *Search Brief*: hard limits,
+   weighted preferences, deal-breakers and search queries. Conflicts between
+   the two of you are flagged rather than silently resolved. The brief is saved
+   so the app can show it.
+3. **Discover:** web search across listing sites and property managers. Pull
+   out the facts and de-duplicate by address. Use `null` for anything unknown;
+   never invent.
+4. **Evaluate** each new or changed listing against every requirement: a
+   verdict and reason per requirement, a fit score, red flags (scam signs) and
+   questions to ask the landlord. Feedback on similar houses is taken into
+   account ("they rejected two places for being dark").
+5. **Maintain:** re-check older listings and mark them *gone* when they leave
+   the market.
+6. **Answer requests** in the queue and write a run log.
+
+Deterministic work is done by plain code, not the model: distance to
+Caltrain, price per person, de-duplication.
+
+## 6. Data model (artifact database)
+
+| Collection | Written by | Contents |
 |---|---|---|
-| **1 · Interpret** | Turns `REQUIREMENTS.md` plus your feedback so far into a **Search Brief**: hard limits (cities, beds, move-in date, any price ceiling), weighted preferences, deal-breakers, and a list of web search queries. Conflicts between the two of you are flagged rather than silently resolved. | One Claude call with structured JSON output. Saved to `data/brief.json` and shown in the app as *"How the agent understood you"*. |
-| **2 · Discover** | Searches the web for listings that fit the brief (Zillow, Redfin, Craigslist, Zumper, HotPads, Apartments.com, property-manager sites, …) and pulls out the facts: address, price, beds, baths, sqft, availability, photos, description. | Agent loop: Claude with the **web search** and **web fetch** server tools, plus our own tools `known_listings()` (avoids duplicates) and `save_listing()` (strict schema). |
-| **3 · Evaluate** | Scores each new or changed listing against **every** requirement: ✅ meets / ⚠️ partly / ❌ fails / ❓ unknown, each with a one-line reason. Also produces an overall **fit score (0–100)**, a 2-sentence summary, red flags (scam signs, missing info) and *questions to ask the landlord*. Your comments and votes on similar houses feed back in. | One structured Claude call per listing. Facts we compute ourselves (walking distance to Caltrain, price per person) are passed in, so the model doesn't guess them. |
-| **4 · Maintain** | Re-checks listings older than ~3 days and marks them **gone** when they leave the market. Gone listings drop off the main view and their issues close. | Web fetch of the listing URL; on failure, a web search for the address. |
-| **5 · Publish** ✅ *exists* | Geocodes addresses, computes Caltrain distance, creates one **GitHub issue per listing** (the discussion thread), syncs your status labels back, and regenerates the web app data + `README.md`. | `scripts/build.py` (plain Python, no AI). |
+| `requirements/{shared,me,friend,dealbreakers}` | People | English text, who updated it, when |
+| `brief/current` | Agent | Parsed requirements (hard limits, weights, queries, conflicts) |
+| `listings/{id}` | Agent | Facts, source links, lat/lng, evaluation, fit score, active/gone, first/last seen |
+| `decisions/{listingId}` | People | Shared status + who set it + reason |
+| `votes/{listingId}__{userId}` | Each person (own vote only) | 👍 / 👎 |
+| `comments/{id}` | People and their agents | listingId, author, text, photo/video asset ids, time |
+| `requests/{id}` | People → agent | Request text, status, the agent's reply |
+| `runs/{id}` | Agent | Run log: searches, found, removed, notes |
 
-**Triggers:** twice a day on a schedule · whenever `REQUIREMENTS.md` changes ·
-whenever someone opens an issue labeled `ask-agent` · manual "Run workflow"
-button.
+Agent-owned and people-owned data live in **separate documents**, so a run can
+never overwrite someone's status or comment.
 
-### Talking to the agent
+## 7. Using it from Claude Code
 
-- **Standing requirements:** edit `REQUIREMENTS.md`. The next run re-interprets
-  them and re-scores every active listing.
-- **About one house:** comment on its issue (*"too far from the station for
-  me"*, *"love the yard"*), react 👍/👎, or set a label
-  (`status: interested` / `touring` / `applied` / `rejected`). The agent reads
-  these as preference signals on its next run.
-- **One-off request:** open an issue with the `ask-agent` label, e.g.
-  *"Find anything with a garage under $4,800 in San Carlos"*. The agent runs a
-  targeted search right away and replies in that issue with what it found.
+Each of you can just talk to your own Claude Code. It uses the ArtifactData
+tool on the app's database, guided by `CLAUDE.md` in this repo:
 
-## 4. The web app (GitHub Pages, static)
+- *"What new places came in today? Anything under $5k near Caltrain?"*
+- *"Mark 2024 Brittan Ave as touring and tell Ken I can do Saturday."*
+- *"Add to my requirements: I need a quiet bedroom, I work night shifts."*
+- *"Compare our top 3 and draft an email to the landlord of the best one."*
 
-One page at `https://ddfzhh.github.io/z16f_find_houses/`, readable on a phone.
+Your friend's Claude Code needs his claude.ai account to have **edit access**
+to the app, which you grant when you share it.
 
-- **Ranked listing cards:** photo, rent (total and per person), beds/baths,
-  sqft, walking minutes to the nearest Caltrain station, fit score, the
-  agent's 2-sentence take, and an expandable requirement-by-requirement
-  checklist with reasons.
-- **Live discussion counts:** 👍/👎 votes, number of comments and status are
-  read live from the GitHub API, so they appear without waiting for a
-  rebuild. Each card has a **Discuss** button that opens its issue.
-- **Map view** of all active listings with the Caltrain stations.
-- **Filters:** city, beds, type, status, "new since my last visit", show/hide
-  rejected and gone.
-- **"How the agent understood you"** panel: your requirements text next to
-  the parsed Search Brief, with an **Edit requirements** button that opens the
-  file in GitHub's editor.
-- **Agent activity:** last run time, what was found, what was removed.
+## 8. Known limits and risks
 
-Comments and votes live in GitHub Issues rather than in the web page, for two
-reasons. Your friend (and his agent) can use them through normal GitHub
-tools, and everything gets free notifications, history and login.
+- **Blocked sites:** Zillow, Redfin and Craigslist block automated page
+  fetches. The agent works mostly from search results and smaller sites
+  (property managers, Rentable, Zumper pages). Expect some ❓ gaps and links
+  for a human to check. Broadening the cloud environment's network access
+  helps for sites that allow it.
+- **Geocoding:** walking distance needs addresses turned into coordinates.
+  This requires allowing `geocoding.geo.census.gov` (free, no key) in the
+  cloud environment's network settings.
+- **Search now:** only the owner's account can start an immediate run. Your
+  friend's requests are picked up on the next scheduled run.
+- **Media quota:** uploads are capped at 20 MB per file and have a
+  per-artifact storage quota. That's plenty for tour photos and short clips,
+  not long videos.
+- **Map tiles:** an embedded street map may be blocked inside the artifact. If
+  so, the app falls back to a simple proximity diagram (listings around each
+  Caltrain station).
+- **Platform dependency:** if claude.ai changes or you outgrow it, move to §9.
 
-### Hosting and media: why GitHub is enough
+## 9. Alternative: standalone product (not recommended for now)
 
-The web app is static (HTML + JS + a JSON file). **GitHub Pages hosts that
-for free** on a public repo. Its limits are a 1 GB site, about 100 GB/month of
-traffic and 100 MB per file, which is far more than two people browsing
-listings need.
+If this needs to be a public product for other people:
+web app on Vercel or Cloudflare Pages, **Supabase** (database + sign-in + file
+storage), the agent as a GitHub Actions cron job calling the **Claude API**
+(web search/fetch tools, needs an API key and usage billing), and a small
+**MCP server** so anyone's Claude Code can connect. That's several times the
+build effort plus monthly API costs. The data model above carries over
+unchanged.
 
-Media is handled in three tiers, so the git repo never fills up with images:
-
-| Media | Where it lives | Why |
-|---|---|---|
-| **Listing photos** (from Zillow etc.) | **Not stored.** The app shows the listing site's own image URL. | Costs nothing. If a site blocks hotlinking, the card falls back to a map pin. |
-| **Fallback thumbnail** (when hotlinking fails) | One compressed thumbnail per listing (~50–80 KB WebP) in `docs/thumbs/` | 200 listings ≈ 15 MB total, well within limits. |
-| **Your own photos and videos from tours** | **Drag them into a comment on the listing's issue.** GitHub stores them as issue attachments (images ≤ 10 MB; videos ≤ 10 MB on free accounts, 100 MB on paid plans). | Doesn't touch the repo at all, sits right next to the discussion, and the app links to it. |
-
-So nothing has to go elsewhere. If this ever outgrows GitHub (thousands of
-full-size photos, or you want it private without paying for GitHub Pro), the
-same static app can move to Cloudflare Pages + R2 or Vercel without code
-changes. That's a later option, not a requirement.
-
-## 5. Repository layout
+## 10. Repository layout (build side only)
 
 ```
-REQUIREMENTS.md          ← you write here (plain English)
-SYSTEM.md                ← this document
-CLAUDE.md / AGENTS.md    ← instructions for any AI agent working in the repo
-PLAN.md                  ← the human side: application packet, touring, lease
-config/search.json   ✅  ← operational settings (cities, stations, schedule, model)
-data/brief.json          ← agent's interpretation of REQUIREMENTS.md
-data/listings.json   ✅  ← every listing + facts + evaluation + issue number
-data/runs/               ← one log per run (searches made, found, removed, cost)
-agent/                   ← the AI agent (Python)
-  run.py                    orchestrates stages 1–4
-  interpret.py · discover.py · evaluate.py · maintain.py
-  tools.py                  known_listings, save_listing, mark_gone
-  prompts/*.md              the system prompts, editable in plain English
-scripts/build.py     ✅  ← stage 5: geocode, issues, Caltrain distance, render
-docs/                    ← the web app (index.html, app.js, listings.json)
-.github/workflows/
-  agent.yml                 schedule + triggers → run agent → build → commit
-  publish.yml               on data change / issue label change → build → commit
+SYSTEM.md            ← this design
+CLAUDE.md, AGENTS.md ← how any agent works with the product (data model, rules)
+PLAN.md              ← the human side: application packet, touring, lease
+app/index.html       ← the web app source (published as the artifact)
+agent/AGENT.md       ← the routine's instructions (the agent's "brain")
+agent/scoring.md     ← fit-score rules, Caltrain stations, schema
+config/search.json   ← cities, stations, weights
+data/seed/           ← initial listings to import (52 found on 2026-10-07)
 ```
 
-## 6. Technology choices
+`REQUIREMENTS.md` and the generated `README.md` dashboard are retired. The
+requirements move into the app, and the seed listings are imported into its
+database.
 
-| Piece | Choice | Why |
-|---|---|---|
-| Model | **Claude Opus 5.5** (`claude-opus-5-5`) via the Anthropic Python SDK | Strongest at multi-step web research and judgment calls. Cost is controlled with `effort` and caps (below) rather than a weaker model. |
-| Agent loop | SDK **Tool Runner** with server tools `web_search_20260209` + `web_fetch_20260209` and our client tools | The web tools run on Anthropic's side; our tools stay small and validated. |
-| Structured data | Structured outputs / `strict: true` tool schemas | Listings and verdicts always come back in a valid shape. |
-| Runtime | **GitHub Actions** (free for public repos) | Already has repo access and internet access, so no servers. |
-| Web app | Static HTML/JS on **GitHub Pages**, Leaflet map | Free, no build step, works on a phone. |
-| Geocoding | US Census geocoder (free, no key) | Good enough for distance-to-station. |
+## 11. Build order
 
-## 7. Cost and safety controls
+1. **Web app + database** with the 52 seed listings: browse, comment, vote,
+   status, photos, requirements editor. Share it with your friend.
+2. **Agent routine:** interpret + evaluate + discover + maintain, twice a day,
+   plus *Search now*.
+3. **In-page Claude:** "Ask about this place", request queue answers.
+4. **Claude Code guide** in `CLAUDE.md`, tested by asking Claude Code to
+   comment and change a status.
 
-- **Cost:** each run is capped (for example ≤ 30 web searches, a task token
-  budget, ≤ 25 new evaluations). Unchanged listings are never re-evaluated.
-  Expected cost is somewhere between cents and a couple of dollars a day,
-  depending on how many new listings appear; each run logs its actual cost.
-  Needs an **Anthropic API key** stored as a GitHub Actions secret
-  (`ANTHROPIC_API_KEY`), and a spend limit can be set in the Anthropic Console.
-- **Untrusted web content:** listing pages could contain text trying to
-  manipulate the agent. The agent can only read the web and save listings
-  through a strict schema. It has no git, shell or issue-writing powers, so
-  a malicious page can at worst produce a bad listing, which you'd see.
-- **Scams:** the evaluator flags classic rental-scam signs (price far below
-  market, "owner abroad", wire or gift-card payment, no viewing).
-- **Privacy:** ⚠️ **this repository is public.** Requirements, listings and
-  issue comments are visible to anyone. Keep salaries, phone numbers and
-  personal details out, or make the repo private. A private repo needs
-  GitHub Pro for Pages, or the web app can be hosted elsewhere.
+## 12. Decisions needed
 
-## 8. Known limits
-
-- Big listing sites (Zillow, Redfin, Craigslist) actively block automated
-  fetching. The agent works mostly from search-result snippets plus pages it
-  *can* open (smaller sites, property managers). Some listings will have gaps
-  (❓) and a link for a human to check. This is the main quality risk to watch.
-- Square footage and availability dates are often missing from listings, so
-  the evaluator marks them unknown instead of guessing.
-- Straight-line distance to Caltrain approximates walking time (~×1.25).
-
-## 9. Build order
-
-1. **Web app + publish pipeline** on the seed data already found. You can
-   browse and comment right away, even before any AI is wired in.
-2. **Interpret + Evaluate** (stages 1 and 3): requirement-by-requirement
-   reasoning appears on the cards.
-3. **Discover + Maintain** on a schedule (stages 2 and 4): the search updates
-   itself.
-4. **`ask-agent` issues**: one-off requests answered in the issue thread.
-
-## 10. Decisions needed from you
-
-1. **Anthropic API key:** OK to use one (stored as a GitHub secret), and what
-   monthly spend cap?
-2. **Public or private repo?** (see Privacy above)
-3. **Friend's GitHub username**, to invite him as a collaborator so he can
-   label issues and edit requirements.
-4. **Enable GitHub Pages** once the app exists: Settings → Pages → Deploy from
-   branch → `/docs`. Takes 30 seconds; I'll give exact steps.
+1. **Approve this design** (claude.ai-hosted) vs. the standalone stack (§9).
+2. **Your friend's claude.ai account** (the email he signs in with), to share
+   the app with edit access.
+3. **Network access:** allow `geocoding.geo.census.gov` (and optionally the
+   listing sites) in this cloud environment's settings.
+4. **Repo visibility:** the app's data no longer lives in the repo, so it can
+   stay public. Make it private if you'd rather keep the code private too.

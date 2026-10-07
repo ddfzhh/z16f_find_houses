@@ -1,9 +1,7 @@
 # What we're looking for
 
-> **This file is the agent's input.** Write in plain English — no special format.
-> The agent re-reads it on every run, so edit it any time your needs change
-> (on GitHub: open this file → ✏️ pencil icon → *Commit changes*).
-> Each of us has a section; the shared section is what we agree on.
+> Seed text for the app's Requirements tab (imported once). After that, edit
+> requirements **in the web app** or through your Claude Code, not here.
 
 ## Shared
 

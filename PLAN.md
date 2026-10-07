@@ -112,7 +112,7 @@ evening and once on a weekend. Narrow to **2–4 target neighborhoods**.
 houses/townhouses, ≥ 2 beds, max price = our budget + ~5%.
 
 **Daily routine (15–20 min):**
-1. Check alerts, add every plausible listing to the dashboard (the agent does this automatically once it runs; see `SYSTEM.md`).
+1. Check alerts, add every plausible listing to the web app (the agent does this automatically once it runs; see `SYSTEM.md`).
 2. Score it against the scorecard. Reject fast.
 3. For anything that passes: message/call **the same day** to book a tour.
    Mention both of us, combined income, move-in date, and that we can
@@ -153,7 +153,7 @@ houses/townhouses, ≥ 2 beds, max price = our budget + ~5%.
 ## How Claude can help along the way
 
 - Triage listings you paste in (or from saved-search alert emails) and add
-  them to the dashboard with a score
+  them to the web app with a score
 - Look up commute times and neighborhood details for a specific address
 - Draft inquiry messages and the intro paragraph for applications
 - Review a lease and point out unusual clauses
