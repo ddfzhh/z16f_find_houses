@@ -87,9 +87,13 @@ One page, phone-friendly. Sign-in is automatic: it's your claude.ai account.
   score**. Each card has the agent's 2-sentence take and an expandable
   checklist: every requirement marked ✅ meets / ⚠️ partly / ❌ fails /
   ❓ unknown, with a reason. Badges for 🆕 new, ⚠️ unverified and 💤 gone.
-- **On each listing — notes, not chat.** Two simple note columns, one per
-  person (*"What I think"*): free text you can edit or delete any time, plus
-  your 👍/👎. Also a shared **status** (*interested → touring → applied*, or
+- **On each listing — quick notes, not chat.** A running list of short notes
+  about the house that both of you see: type a line, press Enter, done
+  (*"Kitchen tiny but yard is great"*, *"landlord says pets OK"*). Each note
+  shows who wrote it and when, can hold photos, and can be edited or deleted
+  by its author. The newest note shows right on the card, and a **Notes** tab
+  lists the latest notes across all houses so you can catch up at a glance.
+  Plus each person's 👍/👎. Also a shared **status** (*interested → touring → applied*, or
   *rejected* with a short reason), tour photos and videos, and an **"Ask about
   this place"** box where Claude answers in the page using the listing and your
   requirements. No threads, no notifications, no real-time messaging; that
@@ -139,7 +143,8 @@ Caltrain, price per person, de-duplication.
 | `brief/current` | Agent | Parsed requirements (hard limits, weights, queries, conflicts) |
 | `listings/{id}` | Agent | Facts, source links, lat/lng, evaluation, fit score, active/gone, first/last seen |
 | `decisions/{listingId}` | People | Shared status + who set it + reason |
-| `notes/{listingId}__{userId}` | Each person (own note only) | Free-text note, 👍/👎, photo/video asset ids, last edited. Editable and deletable. |
+| `notes/{id}` | People and their agents | listingId, author, short text, photo/video asset ids, created/edited time. Only the author edits or deletes. |
+| `votes/{listingId}__{userId}` | Each person (own vote only) | 👍 / 👎 |
 | `requests/{id}` | People → agent | Request text, status, the agent's reply |
 | `runs/{id}` | Agent | Run log: searches, found, removed, notes |
 
@@ -152,7 +157,8 @@ Each of you can just talk to your own Claude Code. It uses the ArtifactData
 tool on the app's database, guided by `CLAUDE.md` in this repo:
 
 - *"What new places came in today? Anything under $5k near Caltrain?"*
-- *"Mark 2024 Brittan Ave as touring and add to my note: great yard, small kitchen."*
+- *"Mark 2024 Brittan Ave as touring and add a note: great yard, small kitchen."*
+- *"What did Ken write about the San Carlos houses this week?"*
 - *"Add to my requirements: I need a quiet bedroom, I work night shifts."*
 - *"Compare our top 3 and draft an email to the landlord of the best one."*
 
@@ -208,7 +214,7 @@ database.
 
 ## 11. Build order
 
-1. **Web app + database** with the 52 seed listings: browse, notes + 👍/👎,
+1. **Web app + database** with the 52 seed listings: browse, quick notes + 👍/👎,
    status, photos, requirements editor. Share it with your friend.
 2. **Agent routine:** interpret + evaluate + discover + maintain, twice a day,
    plus *Search now*.
