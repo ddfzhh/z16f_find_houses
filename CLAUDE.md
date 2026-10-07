@@ -33,7 +33,7 @@ for building the product. Full design: [`SYSTEM.md`](SYSTEM.md) (v2).
   (to be recorded here when published). Collections are listed in
   `SYSTEM.md` §6.
 - Agent-owned docs (`listings`, `brief`, `runs`) and people-owned docs
-  (`requirements`, `decisions`, `votes`, `comments`, `requests`) are separate.
+  (`requirements`, `decisions`, `notes`, `requests`) are separate. Each person has one note per house (`notes/{listingId}__{userId}`); there is no chat or comment thread.
   When acting for a person, write only people-owned docs, as that person.
 - Never delete a listing; mark it gone. Use `null` for unknown facts and never
   invent them.

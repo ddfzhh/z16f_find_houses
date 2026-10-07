@@ -13,9 +13,12 @@ A private web app for two people, powered by an AI agent:
 - The **agent** reads that, searches the web for rentals in Redwood City, San
   Carlos and Menlo Park, judges each listing against your words, and keeps the
   app up to date by itself.
-- You and your friend browse, comment, vote and upload tour photos **in the
-  app**, or just ask your own **Claude Code** ("what's new today?", "tell
-  Ken I like the Brittan Ave house"). Both routes read and write the same data.
+- You and your friend browse houses and **leave your own notes on each one**
+  (what you think of it, 👍/👎, tour photos) **in the app**, or just ask your
+  own **Claude Code** ("what's new today?", "add a note on Brittan Ave: loved
+  the yard"). Both routes read and write the same data.
+- **No chat system.** Real-time conversation stays in WeChat, Discord or
+  whatever you already use. The app only holds information *about the houses*.
 
 ## 2. First principles → the key decision
 
@@ -24,7 +27,7 @@ What the product actually needs:
 | Need | Simplest thing that does it |
 |---|---|
 | A web UI two people can sign in to | A **claude.ai Artifact** (hosted web page, private, shared with your friend) |
-| Shared data: listings, comments, votes, requirements | The artifact's built-in **database** (`db`) |
+| Shared data: listings, notes on each house, requirements | The artifact's built-in **database** (`db`) |
 | Knowing who wrote what | The artifact's built-in **user** identity |
 | Tour photos and videos | The artifact's **asset storage** (≤ 20 MB per file) |
 | AI inside the page ("why does this fit us?") | The artifact's **ask-Claude** capability (`sample`) |
@@ -55,7 +58,7 @@ flowchart LR
     CC["💻 Your Claude Code<br/>(each person)"]
   end
 
-  DB[("🗄️ Shared database<br/>requirements · listings · comments<br/>votes · decisions · requests · photos")]
+  DB[("🗄️ Shared database<br/>requirements · listings · notes<br/>status · requests · photos")]
 
   subgraph Agent["🤖 Search agent — Claude Code Routine (cloud)"]
     A1[Interpret requirements]
@@ -84,10 +87,13 @@ One page, phone-friendly. Sign-in is automatic: it's your claude.ai account.
   score**. Each card has the agent's 2-sentence take and an expandable
   checklist: every requirement marked ✅ meets / ⚠️ partly / ❌ fails /
   ❓ unknown, with a reason. Badges for 🆕 new, ⚠️ unverified and 💤 gone.
-- **On each listing:** a comment thread showing who said what, 👍/👎 from each
-  of you, a shared status (*interested → touring → applied*, or *rejected*),
-  photo and video upload from tours, and an **"Ask about this place"** box
-  where Claude answers in the page using the listing and your requirements.
+- **On each listing — notes, not chat.** Two simple note columns, one per
+  person (*"What I think"*): free text you can edit or delete any time, plus
+  your 👍/👎. Also a shared **status** (*interested → touring → applied*, or
+  *rejected* with a short reason), tour photos and videos, and an **"Ask about
+  this place"** box where Claude answers in the page using the listing and your
+  requirements. No threads, no notifications, no real-time messaging; that
+  stays in WeChat or Discord.
 - **Requirements tab:** three plain-English boxes (*Shared*, *Me*, *Friend*)
   plus *Deal-breakers*. Next to them, **"How the agent understood you"** (the
   parsed brief), so a misunderstanding is visible and you can fix the wording.
@@ -105,7 +111,7 @@ A scheduled cloud Claude Code session. It runs **twice a day**, plus whenever
 the owner presses *Search now*. Its instructions live in this repo
 (`agent/AGENT.md`), so improving the agent is a normal code change. Each run:
 
-1. **Read state** from the database: requirements, feedback (comments, votes,
+1. **Read state** from the database: requirements, feedback (your notes, 👍/👎,
    rejections and their reasons), open requests, known listings.
 2. **Interpret** the English requirements into a *Search Brief*: hard limits,
    weighted preferences, deal-breakers and search queries. Conflicts between
@@ -133,13 +139,12 @@ Caltrain, price per person, de-duplication.
 | `brief/current` | Agent | Parsed requirements (hard limits, weights, queries, conflicts) |
 | `listings/{id}` | Agent | Facts, source links, lat/lng, evaluation, fit score, active/gone, first/last seen |
 | `decisions/{listingId}` | People | Shared status + who set it + reason |
-| `votes/{listingId}__{userId}` | Each person (own vote only) | 👍 / 👎 |
-| `comments/{id}` | People and their agents | listingId, author, text, photo/video asset ids, time |
+| `notes/{listingId}__{userId}` | Each person (own note only) | Free-text note, 👍/👎, photo/video asset ids, last edited. Editable and deletable. |
 | `requests/{id}` | People → agent | Request text, status, the agent's reply |
 | `runs/{id}` | Agent | Run log: searches, found, removed, notes |
 
 Agent-owned and people-owned data live in **separate documents**, so a run can
-never overwrite someone's status or comment.
+never overwrite someone's status or note.
 
 ## 7. Using it from Claude Code
 
@@ -147,7 +152,7 @@ Each of you can just talk to your own Claude Code. It uses the ArtifactData
 tool on the app's database, guided by `CLAUDE.md` in this repo:
 
 - *"What new places came in today? Anything under $5k near Caltrain?"*
-- *"Mark 2024 Brittan Ave as touring and tell Ken I can do Saturday."*
+- *"Mark 2024 Brittan Ave as touring and add to my note: great yard, small kitchen."*
 - *"Add to my requirements: I need a quiet bedroom, I work night shifts."*
 - *"Compare our top 3 and draft an email to the landlord of the best one."*
 
@@ -203,13 +208,13 @@ database.
 
 ## 11. Build order
 
-1. **Web app + database** with the 52 seed listings: browse, comment, vote,
+1. **Web app + database** with the 52 seed listings: browse, notes + 👍/👎,
    status, photos, requirements editor. Share it with your friend.
 2. **Agent routine:** interpret + evaluate + discover + maintain, twice a day,
    plus *Search now*.
 3. **In-page Claude:** "Ask about this place", request queue answers.
 4. **Claude Code guide** in `CLAUDE.md`, tested by asking Claude Code to
-   comment and change a status.
+   add a note and change a status.
 
 ## 12. Decisions needed
 
