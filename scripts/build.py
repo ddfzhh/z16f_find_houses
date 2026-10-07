@@ -248,6 +248,8 @@ def readme_row(x, repo):
     where = f"[{where}]({x['url']}), {x.get('city', '')}"
     if x.get("neighborhood"):
         where += f" ({x['neighborhood']})"
+    if x.get("confidence") == "low":
+        where += " · ⚠️ unverified"
     ct = (f"{x['caltrain_miles']} mi to {x['caltrain']} (~{x['caltrain_walk_min']} min walk)"
           if x.get("caltrain_miles") is not None else "?")
     talk = f"[#{x['issue']}](https://github.com/{repo}/issues/{x['issue']})" if x.get("issue") else "—"
