@@ -1,17 +1,106 @@
 {
   "_note": "Hand-maintained places used by scripts/enrich.py. Edit freely; the next enrichment run picks changes up.",
   "shopping_districts": [
-    {"name": "Downtown Redwood City (Courthouse Square)", "lat": 37.4866, "lng": -122.2287},
-    {"name": "Laurel Street, San Carlos", "lat": 37.5037, "lng": -122.2602},
-    {"name": "Santa Cruz Avenue, Menlo Park", "lat": 37.4530, "lng": -122.1843},
-    {"name": "Hillsdale Shopping Center", "lat": 37.5379, "lng": -122.2996},
-    {"name": "Stanford Shopping Center", "lat": 37.4434, "lng": -122.1710}
+    {
+      "name": "Downtown Redwood City (Courthouse Square)",
+      "lat": 37.4866,
+      "lng": -122.2287
+    },
+    {
+      "name": "Laurel Street, San Carlos",
+      "lat": 37.5037,
+      "lng": -122.2602
+    },
+    {
+      "name": "Santa Cruz Avenue, Menlo Park",
+      "lat": 37.453,
+      "lng": -122.1843
+    },
+    {
+      "name": "Hillsdale Shopping Center",
+      "lat": 37.5379,
+      "lng": -122.2996
+    },
+    {
+      "name": "Stanford Shopping Center",
+      "lat": 37.4434,
+      "lng": -122.171
+    }
   ],
   "caltrain_fallback": [
-    {"name": "Redwood City", "lat": 37.4855, "lng": -122.2318},
-    {"name": "San Carlos", "lat": 37.5075, "lng": -122.2603},
-    {"name": "Belmont", "lat": 37.5206, "lng": -122.2758},
-    {"name": "Menlo Park", "lat": 37.4545, "lng": -122.1822},
-    {"name": "Palo Alto", "lat": 37.4433, "lng": -122.1650}
+    {
+      "name": "Redwood City",
+      "lat": 37.4855,
+      "lng": -122.2318
+    },
+    {
+      "name": "San Carlos",
+      "lat": 37.5075,
+      "lng": -122.2603
+    },
+    {
+      "name": "Belmont",
+      "lat": 37.5206,
+      "lng": -122.2758
+    },
+    {
+      "name": "Menlo Park",
+      "lat": 37.4545,
+      "lng": -122.1822
+    },
+    {
+      "name": "Palo Alto",
+      "lat": 37.4433,
+      "lng": -122.165
+    }
+  ],
+  "hwy101_fallback": [
+    {
+      "name": "US 101 at Holly St / Brittan Ave",
+      "lat": 37.5079,
+      "lng": -122.2468
+    },
+    {
+      "name": "US 101 at Whipple Ave",
+      "lat": 37.4925,
+      "lng": -122.2185
+    },
+    {
+      "name": "US 101 at Woodside Rd",
+      "lat": 37.4807,
+      "lng": -122.2128
+    },
+    {
+      "name": "US 101 at Marsh Rd",
+      "lat": 37.4819,
+      "lng": -122.184
+    },
+    {
+      "name": "US 101 at Willow Rd",
+      "lat": 37.4714,
+      "lng": -122.1612
+    }
+  ],
+  "hwy280_fallback": [
+    {
+      "name": "I-280 at Edgewood Rd",
+      "lat": 37.4735,
+      "lng": -122.2862
+    },
+    {
+      "name": "I-280 at Farm Hill Blvd",
+      "lat": 37.4608,
+      "lng": -122.2722
+    },
+    {
+      "name": "I-280 at Woodside Rd",
+      "lat": 37.44,
+      "lng": -122.2575
+    },
+    {
+      "name": "I-280 at Sand Hill Rd",
+      "lat": 37.419,
+      "lng": -122.2072
+    }
   ]
 }

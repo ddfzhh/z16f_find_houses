@@ -42,6 +42,7 @@ UA = "z16f-find-houses/1.0 (+https://github.com/ddfzhh/z16f_find_houses)"
 # south, west, north, east: Redwood City, San Carlos, Menlo Park (+ margin)
 BBOX = (37.425, -122.305, 37.535, -122.135)
 OVERPASS = ["https://overpass-api.de/api/interpreter",
+            "https://overpass.private.coffee/api/interpreter",
             "https://overpass.kumi.systems/api/interpreter"]
 OSRM = {"walk": "https://routing.openstreetmap.de/routed-foot",
         "drive": "https://routing.openstreetmap.de/routed-car"}
@@ -72,12 +73,19 @@ def http(url, data=None, timeout=60, retries=3):
     return None
 
 
-def overpass(query):
-    for url in OVERPASS:
-        res = http(url, {"data": query}, timeout=180)
-        if res and "elements" in res:
-            return res["elements"]
-    raise RuntimeError("Overpass unavailable")
+def overpass(query, required=True):
+    """Run an Overpass query, trying each public server with patient retries
+    (they are often busy). Returns [] when not required and all servers fail."""
+    for rnd in range(3):
+        for url in OVERPASS:
+            res = http(url, {"data": query}, timeout=200, retries=2)
+            if res and "elements" in res:
+                return res["elements"]
+        log(f"  overpass busy, waiting before round {rnd + 2}")
+        time.sleep(30 * (rnd + 1))
+    if required:
+        raise RuntimeError("Overpass unavailable")
+    return []
 
 
 def meters(a, b):
@@ -153,7 +161,7 @@ node(w)["highway"="motorway_junction"];
 out;"""
         pois[key] = [{"name": f"{ref} exit {el.get('tags', {}).get('ref', '')}".strip()
                       + (f" ({el['tags']['exit_to']})" if el.get("tags", {}).get("exit_to") else ""),
-                      "lat": el["lat"], "lng": el["lon"]} for el in overpass(q) if "lat" in el]
+                      "lat": el["lat"], "lng": el["lon"]} for el in overpass(q, required=False) if "lat" in el]
     log("pois:", {k: len(v) for k, v in pois.items()})
     return pois
 
@@ -169,7 +177,7 @@ def fetch_noise_lines():
 );
 out geom tags;"""
     lines = {"caltrain_tracks": [], "us101": [], "el_camino": []}
-    for el in overpass(q):
+    for el in overpass(q, required=False):
         t = el.get("tags", {})
         geom = [(p["lat"], p["lon"]) for p in el.get("geometry", [])]
         if len(geom) < 2:
@@ -196,8 +204,10 @@ def load_pois():
     data = json.loads(POIS.read_text())
     places = json.loads(PLACES.read_text())
     data["pois"]["shopping"] = places["shopping_districts"]
-    if not data["pois"].get("caltrain"):
-        data["pois"]["caltrain"] = places["caltrain_fallback"]
+    # hand-kept fallbacks when OpenStreetMap lookups came back empty
+    for key, fb in (("caltrain", "caltrain_fallback"), ("hwy101", "hwy101_fallback"), ("hwy280", "hwy280_fallback")):
+        if not data["pois"].get(key):
+            data["pois"][key] = places.get(fb, [])
     return data
 
 
@@ -402,8 +412,15 @@ def main():
     args = ap.parse_args()
 
     if args.area:
-        build_basemap()
-        build_pois()
+        failed = []
+        for step in (build_basemap, build_pois):
+            try:
+                step()
+            except Exception as e:  # keep whatever succeeded
+                log(f"{step.__name__} failed: {e}")
+                failed.append(step.__name__)
+        if failed and not POIS.exists() and not BASEMAP.exists():
+            raise SystemExit(f"map data build failed: {failed}")
     if not args.houses:
         return
 
