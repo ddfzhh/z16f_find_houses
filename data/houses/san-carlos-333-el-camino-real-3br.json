@@ -1,0 +1,76 @@
+{
+  "id": "san-carlos-333-el-camino-real-3br",
+  "title": "Trestle - 3BR/2BA apartment next to San Carlos Caltrain",
+  "address": "333 El Camino Real",
+  "city": "San Carlos",
+  "zip": "94070",
+  "neighborhood": "Downtown",
+  "links": [
+    "https://www.zillow.com/apartments/san-carlos-ca/trestle/BJnmBf/"
+  ],
+  "evidence": "Redfin snippet: $6,299/mo, 3BR/2BA, 1,458 sqft, '8 units available'.",
+  "origin": "web-search",
+  "active": true,
+  "first_seen": "2026-10-07",
+  "last_seen": "2026-10-07",
+  "facts": {
+    "rent": {
+      "v": 6299,
+      "src": "listing",
+      "conf": 0.6,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "beds": {
+      "v": 3,
+      "src": "listing",
+      "conf": 0.6,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "baths": {
+      "v": 2,
+      "src": "listing",
+      "conf": 0.6,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "sqft": {
+      "v": 1458,
+      "src": "listing",
+      "conf": 0.6,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "property_type": {
+      "v": "apartment",
+      "src": "listing",
+      "conf": 0.6,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "available": {
+      "v": "now",
+      "src": "listing",
+      "conf": 0.6,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "pets": {
+      "v": "pets welcome",
+      "src": "listing",
+      "conf": 0.6,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "listing_verified": {
+      "v": "partly",
+      "src": "computed",
+      "conf": 1.0,
+      "stage": "E",
+      "at": "2026-10-07"
+    }
+  },
+  "location": null,
+  "metrics": null
+}

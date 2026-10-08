@@ -1,0 +1,62 @@
+{
+  "id": "redwood-city-504-roosevelt-ave",
+  "title": "3bd/2ba house (price not shown)",
+  "address": "504 Roosevelt Ave",
+  "city": "Redwood City",
+  "zip": "94061",
+  "neighborhood": null,
+  "links": [
+    "https://www.zumper.com/address/504-roosevelt-ave-redwood-city-ca-94061-usa"
+  ],
+  "evidence": "Zumper: 3/2, 1,360 sqft, $4,200 deposit, '5+ Days Ago'. No rent shown.",
+  "origin": "web-search",
+  "active": true,
+  "first_seen": "2026-10-07",
+  "last_seen": "2026-10-07",
+  "facts": {
+    "beds": {
+      "v": 3,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "baths": {
+      "v": 2,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "sqft": {
+      "v": 1360,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "property_type": {
+      "v": "house",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "pets": {
+      "v": "No pets",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "listing_verified": {
+      "v": "unverified",
+      "src": "computed",
+      "conf": 1.0,
+      "stage": "E",
+      "at": "2026-10-07"
+    }
+  },
+  "location": null,
+  "metrics": null
+}

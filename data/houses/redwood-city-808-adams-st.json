@@ -1,0 +1,76 @@
+{
+  "id": "redwood-city-808-adams-st",
+  "title": "2bd/1ba condo",
+  "address": "808 Adams St",
+  "city": "Redwood City",
+  "zip": "94061",
+  "neighborhood": null,
+  "links": [
+    "https://www.rentler.com/places-for-rent/ca/redwood-city/808-adams-st/12075069"
+  ],
+  "evidence": "Rentler: $4,500, 2/1, 950 sqft, available now. Snapshot age unknown.",
+  "origin": "web-search",
+  "active": true,
+  "first_seen": "2026-10-07",
+  "last_seen": "2026-10-07",
+  "facts": {
+    "rent": {
+      "v": 4500,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "beds": {
+      "v": 2,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "baths": {
+      "v": 1,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "sqft": {
+      "v": 950,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "property_type": {
+      "v": "condo",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "available": {
+      "v": "now",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "pets": {
+      "v": "Pets allowed",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "listing_verified": {
+      "v": "unverified",
+      "src": "computed",
+      "conf": 1.0,
+      "stage": "E",
+      "at": "2026-10-07"
+    }
+  },
+  "location": null,
+  "metrics": null
+}

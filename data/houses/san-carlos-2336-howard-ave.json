@@ -1,0 +1,98 @@
+{
+  "id": "san-carlos-2336-howard-ave",
+  "title": "2336 Howard Ave - furnished 2BR house, utilities included",
+  "address": "2336 Howard Ave",
+  "city": "San Carlos",
+  "zip": "94070",
+  "neighborhood": null,
+  "links": [
+    "https://www.zillow.com/homedetails/2336-Howard-Ave-San-Carlos-CA-94070/15560170_zpid/",
+    "https://www.rent.com/r/2336-howard-ave-san-carlos-ca-lv2335555566"
+  ],
+  "evidence": "Zillow history: listed 6/4/2026 at $5,500, available Oct 1 2026, furnished with utilities, WiFi and cleaning included. Redfin/Rent.com show $5,000.",
+  "origin": "web-search",
+  "active": true,
+  "first_seen": "2026-10-07",
+  "last_seen": "2026-10-07",
+  "facts": {
+    "rent": {
+      "v": 5500,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "beds": {
+      "v": 2,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "sqft": {
+      "v": 1000,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "property_type": {
+      "v": "house",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "available": {
+      "v": "2026-10-01",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "washer_dryer": {
+      "v": "in-unit",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "parking": {
+      "v": "off-street",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "pets": {
+      "v": "no pets",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "listed_date": {
+      "v": "2026-06-04",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "furnished": {
+      "v": "yes",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "listing_verified": {
+      "v": "unverified",
+      "src": "computed",
+      "conf": 1.0,
+      "stage": "E",
+      "at": "2026-10-07"
+    }
+  },
+  "location": null,
+  "metrics": null
+}

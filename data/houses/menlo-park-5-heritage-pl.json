@@ -1,0 +1,84 @@
+{
+  "id": "menlo-park-5-heritage-pl",
+  "title": "Furnished 3BR/3BA townhouse, 5 Heritage Pl (Blueground)",
+  "address": "5 Heritage Pl",
+  "city": "Menlo Park",
+  "zip": "94025",
+  "neighborhood": null,
+  "links": [
+    "https://www.padmapper.com/rentals/58444876/3-bedroom-3-bath-apartment-at-5-heritage-pl-menlo-park-ca-94025",
+    "https://www.theblueground.com/m/furnished-apartments/menlo-park-ca-usa/f/bedrooms-3"
+  ],
+  "evidence": "Blueground snapshots conflict: 'Available 04 Oct 2026' at $5,500 vs 'Available 26 Jan 2027'. Other quotes $4,390-$5,970 by stay length. Furnished, corporate-priced.",
+  "origin": "web-search",
+  "active": true,
+  "first_seen": "2026-10-07",
+  "last_seen": "2026-10-07",
+  "facts": {
+    "rent": {
+      "v": 5500,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "beds": {
+      "v": 3,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "baths": {
+      "v": 3,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "sqft": {
+      "v": 1870,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "property_type": {
+      "v": "townhouse",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "washer_dryer": {
+      "v": "in-unit",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "parking": {
+      "v": "parking (Redfin)",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "furnished": {
+      "v": "yes",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "listing_verified": {
+      "v": "unverified",
+      "src": "computed",
+      "conf": 1.0,
+      "stage": "E",
+      "at": "2026-10-07"
+    }
+  },
+  "location": null,
+  "metrics": null
+}

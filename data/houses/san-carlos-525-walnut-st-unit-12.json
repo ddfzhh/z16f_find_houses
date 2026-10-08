@@ -1,0 +1,77 @@
+{
+  "id": "san-carlos-525-walnut-st-unit-12",
+  "title": "525 Walnut St Unit 12 - 2BR/1BA apartment near downtown",
+  "address": "525 Walnut St Unit 12",
+  "city": "San Carlos",
+  "zip": "94070",
+  "neighborhood": null,
+  "links": [
+    "https://www.rent.com/california/san-carlos-apartments/525-walnut-st-4-lv1291553551",
+    "https://www.rentable.co/san-carlos-ca/525-walnut-st"
+  ],
+  "evidence": "Several snippets: $2,900, available now (Redwood Landing Properties). Some source pages are 7-11 months old — currency doubtful.",
+  "origin": "web-search",
+  "active": true,
+  "first_seen": "2026-10-07",
+  "last_seen": "2026-10-07",
+  "facts": {
+    "rent": {
+      "v": 2900,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "beds": {
+      "v": 2,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "baths": {
+      "v": 1,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "sqft": {
+      "v": 800,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "property_type": {
+      "v": "apartment",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "available": {
+      "v": "now",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "washer_dryer": {
+      "v": "in-unit",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "listing_verified": {
+      "v": "unverified",
+      "src": "computed",
+      "conf": 1.0,
+      "stage": "E",
+      "at": "2026-10-07"
+    }
+  },
+  "location": null,
+  "metrics": null
+}

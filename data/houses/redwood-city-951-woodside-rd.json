@@ -1,0 +1,83 @@
+{
+  "id": "redwood-city-951-woodside-rd",
+  "title": "3bd/2.5ba townhouse (8-unit community)",
+  "address": "951 Woodside Rd",
+  "city": "Redwood City",
+  "zip": "94061",
+  "neighborhood": null,
+  "links": [
+    "https://www.zumper.com/address/951-woodside-rd-redwood-city-ca-94061-usa"
+  ],
+  "evidence": "Zumper: $6,995, 3/2.5, 1,717 sqft. Page ~86 days old (mid-July 2026); may be rented.",
+  "origin": "web-search",
+  "active": true,
+  "first_seen": "2026-10-07",
+  "last_seen": "2026-10-07",
+  "facts": {
+    "rent": {
+      "v": 6995,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "beds": {
+      "v": 3,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "baths": {
+      "v": 2.5,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "sqft": {
+      "v": 1717,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "property_type": {
+      "v": "townhouse",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "washer_dryer": {
+      "v": "in-unit",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "parking": {
+      "v": "Side-by-side 2-car garage",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "pets": {
+      "v": "Pet friendly",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "listing_verified": {
+      "v": "unverified",
+      "src": "computed",
+      "conf": 1.0,
+      "stage": "E",
+      "at": "2026-10-07"
+    }
+  },
+  "location": null,
+  "metrics": null
+}

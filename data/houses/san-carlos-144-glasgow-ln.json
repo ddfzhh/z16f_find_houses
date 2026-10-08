@@ -1,0 +1,84 @@
+{
+  "id": "san-carlos-144-glasgow-ln",
+  "title": "144 Glasgow Ln - 3BR/2BA house with yard and 2-car garage",
+  "address": "144 Glasgow Ln",
+  "city": "San Carlos",
+  "zip": "94070",
+  "neighborhood": null,
+  "links": [
+    "https://www.apartments.com/144-glasgow-ln-san-carlos-ca/qyw2nqz/",
+    "https://www.zumper.com/address/144-glasgow-ln-san-carlos-ca-94070-usa"
+  ],
+  "evidence": "Gordon Kenny Realty. $6,995, available now, recently updated on two sites; others show $7,250-$7,750, so confirm rent.",
+  "origin": "web-search",
+  "active": true,
+  "first_seen": "2026-10-07",
+  "last_seen": "2026-10-07",
+  "facts": {
+    "rent": {
+      "v": 6995,
+      "src": "listing",
+      "conf": 0.6,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "beds": {
+      "v": 3,
+      "src": "listing",
+      "conf": 0.6,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "baths": {
+      "v": 2,
+      "src": "listing",
+      "conf": 0.6,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "property_type": {
+      "v": "house",
+      "src": "listing",
+      "conf": 0.6,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "available": {
+      "v": "now",
+      "src": "listing",
+      "conf": 0.6,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "washer_dryer": {
+      "v": "in-unit",
+      "src": "listing",
+      "conf": 0.6,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "parking": {
+      "v": "2-car garage",
+      "src": "listing",
+      "conf": 0.6,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "pets": {
+      "v": "no pets",
+      "src": "listing",
+      "conf": 0.6,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "listing_verified": {
+      "v": "partly",
+      "src": "computed",
+      "conf": 1.0,
+      "stage": "E",
+      "at": "2026-10-07"
+    }
+  },
+  "location": null,
+  "metrics": null
+}

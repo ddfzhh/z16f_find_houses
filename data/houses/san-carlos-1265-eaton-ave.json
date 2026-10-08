@@ -1,0 +1,91 @@
+{
+  "id": "san-carlos-1265-eaton-ave",
+  "title": "1265 Eaton Ave - 3BR single-family house",
+  "address": "1265 Eaton Ave",
+  "city": "San Carlos",
+  "zip": "94070",
+  "neighborhood": null,
+  "links": [
+    "https://www.zillow.com/homedetails/1265-Eaton-Ave-San-Carlos-CA-94070/15562194_zpid/",
+    "https://www.trulia.com/home/1265-eaton-ave-san-carlos-ca-94070-15562194"
+  ],
+  "evidence": "Zillow/Trulia snippets: listed Aug 18 2026 at $6,500, available now, $6,500 deposit. Short lease (6-8 months); bath count conflicts (2.5 vs 3).",
+  "origin": "web-search",
+  "active": true,
+  "first_seen": "2026-10-07",
+  "last_seen": "2026-10-07",
+  "facts": {
+    "rent": {
+      "v": 6500,
+      "src": "listing",
+      "conf": 0.6,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "beds": {
+      "v": 3,
+      "src": "listing",
+      "conf": 0.6,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "baths": {
+      "v": 2.5,
+      "src": "listing",
+      "conf": 0.6,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "sqft": {
+      "v": 1800,
+      "src": "listing",
+      "conf": 0.6,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "property_type": {
+      "v": "house",
+      "src": "listing",
+      "conf": 0.6,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "available": {
+      "v": "now",
+      "src": "listing",
+      "conf": 0.6,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "washer_dryer": {
+      "v": "in-unit",
+      "src": "listing",
+      "conf": 0.6,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "pets": {
+      "v": "cats and small dogs allowed",
+      "src": "listing",
+      "conf": 0.6,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "listed_date": {
+      "v": "2026-08-18",
+      "src": "listing",
+      "conf": 0.6,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "listing_verified": {
+      "v": "partly",
+      "src": "computed",
+      "conf": 1.0,
+      "stage": "E",
+      "at": "2026-10-07"
+    }
+  },
+  "location": null,
+  "metrics": null
+}

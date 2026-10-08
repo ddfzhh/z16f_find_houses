@@ -1,0 +1,70 @@
+{
+  "id": "san-carlos-656-cedar-st-e",
+  "title": "656 Cedar St #E - 2BR/2.5BA downtown townhome",
+  "address": "656 Cedar St #E",
+  "city": "San Carlos",
+  "zip": "94070",
+  "neighborhood": "Downtown",
+  "links": [
+    "https://www.padmapper.com/rentals/29210736p/2-bedroom-2-bath-apartment-at-656-cedar-st-san-carlos-ca-94070",
+    "https://www.apartments.com/656-cedar-st-san-carlos-ca/8c71z20/"
+  ],
+  "evidence": "PadMapper/Homes.com: $4,900, water/garbage/sewer included, two en-suite bedrooms + office nook, downtown near Caltrain. No posting date.",
+  "origin": "web-search",
+  "active": true,
+  "first_seen": "2026-10-07",
+  "last_seen": "2026-10-07",
+  "facts": {
+    "rent": {
+      "v": 4900,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "beds": {
+      "v": 2,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "baths": {
+      "v": 2.5,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "sqft": {
+      "v": 1440,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "property_type": {
+      "v": "townhouse",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "parking": {
+      "v": "2 secure garage spaces",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "listing_verified": {
+      "v": "unverified",
+      "src": "computed",
+      "conf": 1.0,
+      "stage": "E",
+      "at": "2026-10-07"
+    }
+  },
+  "location": null,
+  "metrics": null
+}

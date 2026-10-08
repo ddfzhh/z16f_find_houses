@@ -1,0 +1,90 @@
+{
+  "id": "menlo-park-1324-sevier-ave",
+  "title": "Furnished 4BR/2.5BA Belle Haven home, 1324 Sevier Ave (Blueground)",
+  "address": "1324 Sevier Ave",
+  "city": "Menlo Park",
+  "zip": "94025",
+  "neighborhood": "Belle Haven",
+  "links": [
+    "https://www.corporatehousing.com/ca/menlo-park/1324-sevier-ave/w231l6h"
+  ],
+  "evidence": "CorporateHousing (Blueground): $4,750/mo 3-month, $5,230/mo 1-year. Furnished; move-in date unknown. Included as an unusually cheap 4BR.",
+  "origin": "web-search",
+  "active": true,
+  "first_seen": "2026-10-07",
+  "last_seen": "2026-10-07",
+  "facts": {
+    "rent": {
+      "v": 5230,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "beds": {
+      "v": 4,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "baths": {
+      "v": 2.5,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "sqft": {
+      "v": 1450,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "property_type": {
+      "v": "other",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "washer_dryer": {
+      "v": "in-unit",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "parking": {
+      "v": "parking (Redfin)",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "pets": {
+      "v": "pets welcome (Redfin)",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "furnished": {
+      "v": "yes",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "listing_verified": {
+      "v": "unverified",
+      "src": "computed",
+      "conf": 1.0,
+      "stage": "E",
+      "at": "2026-10-07"
+    }
+  },
+  "location": null,
+  "metrics": null
+}

@@ -1,0 +1,53 @@
+name: Enrich houses
+
+# Computes location data for new or changed houses (geocode, nearby places,
+# walking/driving times, noise, flood zone) and builds the app's street map.
+# Runs here because these free map services need open internet access.
+on:
+  push:
+    paths:
+      - "data/houses/**"
+      - "data/geo/places.json"
+      - "scripts/enrich.py"
+  workflow_dispatch:
+    inputs:
+      all:
+        description: "Re-enrich every house"
+        type: boolean
+        default: false
+      basemap:
+        description: "Rebuild the street map"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: enrich-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  enrich:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Enrich
+        run: |
+          args=""
+          if [ "${{ inputs.all }}" = "true" ]; then args="$args --all"; fi
+          if [ "${{ inputs.basemap }}" = "true" ]; then args="$args --basemap"; fi
+          python3 scripts/enrich.py $args
+      - name: Commit results
+        run: |
+          git config user.name "house-hunt-enrich"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/houses data/geo
+          if git diff --cached --quiet; then echo "nothing to commit"; exit 0; fi
+          git commit -m "Enrich houses with location data [automated]"
+          for i in 1 2 3; do
+            git pull --rebase origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}" && exit 0
+            sleep 5
+          done
+          exit 1

@@ -1,0 +1,91 @@
+{
+  "id": "menlo-park-1368-sevier-ave",
+  "title": "3BR/2BA Belle Haven house near Meta, 1368 Sevier Ave (Forbes Group PM)",
+  "address": "1368 Sevier Ave",
+  "city": "Menlo Park",
+  "zip": "94025",
+  "neighborhood": "Belle Haven",
+  "links": [
+    "https://www.rentable.co/menlo-park-ca/1368-sevier-ave",
+    "https://hotpads.com/1368-sevier-ave-menlo-park-ca-94025-1m75pxq/pad"
+  ],
+  "evidence": "Rentable snippet: 'Available Now', 3bd/2ba, 1,210 sqft, $6,100, tenant pays utilities + $65 solar fee. A Zillow-derived snippet showed $4,895 for the same address. Listing date unknown; prices conflict.",
+  "origin": "web-search",
+  "active": true,
+  "first_seen": "2026-10-07",
+  "last_seen": "2026-10-07",
+  "facts": {
+    "rent": {
+      "v": 6100,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "beds": {
+      "v": 3,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "baths": {
+      "v": 2,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "sqft": {
+      "v": 1210,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "property_type": {
+      "v": "house",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "available": {
+      "v": "now",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "washer_dryer": {
+      "v": "in-garage",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "parking": {
+      "v": "attached garage",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "pets": {
+      "v": "no pets",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "listing_verified": {
+      "v": "unverified",
+      "src": "computed",
+      "conf": 1.0,
+      "stage": "E",
+      "at": "2026-10-07"
+    }
+  },
+  "location": null,
+  "metrics": null
+}

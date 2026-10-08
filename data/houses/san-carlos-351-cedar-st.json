@@ -1,0 +1,63 @@
+{
+  "id": "san-carlos-351-cedar-st",
+  "title": "351 Cedar St - 3BR/1BA house near downtown",
+  "address": "351 Cedar St",
+  "city": "San Carlos",
+  "zip": "94070",
+  "neighborhood": null,
+  "links": [
+    "https://www.zillow.com/homedetails/351-Cedar-St-San-Carlos-CA-94070/15557035_zpid/",
+    "https://www.trulia.com/p/ca/san-carlos/351-cedar-st-san-carlos-ca-94070--2082787111"
+  ],
+  "evidence": "Zillow structured data: $5,800 'in stock'; Trulia lists $5,800. ApartmentList gives an Oct 15 availability (no year). Older posts call it 2BR + bonus room.",
+  "origin": "web-search",
+  "active": true,
+  "first_seen": "2026-10-07",
+  "last_seen": "2026-10-07",
+  "facts": {
+    "rent": {
+      "v": 5800,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "beds": {
+      "v": 3,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "baths": {
+      "v": 1,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "sqft": {
+      "v": 1210,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "property_type": {
+      "v": "house",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "listing_verified": {
+      "v": "unverified",
+      "src": "computed",
+      "conf": 1.0,
+      "stage": "E",
+      "at": "2026-10-07"
+    }
+  },
+  "location": null,
+  "metrics": null
+}

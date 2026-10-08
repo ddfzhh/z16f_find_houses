@@ -1,0 +1,87 @@
+{
+  "id": "menlo-park-242-stanford-ave",
+  "title": "3BR/2BA house with oak-tree backyard, 242 Stanford Ave (Robinson & Co)",
+  "address": "242 Stanford Ave",
+  "city": "Menlo Park",
+  "zip": "94025",
+  "neighborhood": "University Heights / West Menlo",
+  "links": [
+    "https://hotpads.com/242-stanford-ave-menlo-park-ca-94025-1m75t22/pad",
+    "https://www.padmapper.com/rentals/29096572p/3-bedroom-2-bath-apartment-at-242-stanford-ave-menlo-park-ca-94025",
+    "https://www.rentable.co/menlo-park-ca/charming-menlo-park-home-with-private-backyard-beautiful-oak-tree",
+    "https://www.apartmentlist.com/ca/west-menlo-park/charming-menlo-park-home-with-private-backyard-beautiful-oak-tree",
+    "https://www.forrent.com/ca/menlo-park/charming-menlo-park-home-with-private-backyard-and-beautiful-oak-tree/t778ft9"
+  ],
+  "evidence": "Rentable lists it as available Aug 17 2026. Several sites agree on $6,350, 3bd/2ba, 1,330 sqft. May already be leased since the date passed.",
+  "origin": "web-search",
+  "active": true,
+  "first_seen": "2026-10-07",
+  "last_seen": "2026-10-07",
+  "facts": {
+    "rent": {
+      "v": 6350,
+      "src": "listing",
+      "conf": 0.6,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "beds": {
+      "v": 3,
+      "src": "listing",
+      "conf": 0.6,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "baths": {
+      "v": 2,
+      "src": "listing",
+      "conf": 0.6,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "sqft": {
+      "v": 1330,
+      "src": "listing",
+      "conf": 0.6,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "property_type": {
+      "v": "house",
+      "src": "listing",
+      "conf": 0.6,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "available": {
+      "v": "2026-08-17",
+      "src": "listing",
+      "conf": 0.6,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "parking": {
+      "v": "1-car garage plus driveway",
+      "src": "listing",
+      "conf": 0.6,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "pets": {
+      "v": "conflicting: PadMapper says cats OK, ForRent says no pets",
+      "src": "listing",
+      "conf": 0.6,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "listing_verified": {
+      "v": "partly",
+      "src": "computed",
+      "conf": 1.0,
+      "stage": "E",
+      "at": "2026-10-07"
+    }
+  },
+  "location": null,
+  "metrics": null
+}

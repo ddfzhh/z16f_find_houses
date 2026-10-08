@@ -1,0 +1,92 @@
+{
+  "id": "menlo-park-854-fremont-st",
+  "title": "2BR/2BA upstairs corner unit in 4-plex, 854 Fremont St (Robinson & Co)",
+  "address": "854 Fremont St",
+  "city": "Menlo Park",
+  "zip": "94025",
+  "neighborhood": null,
+  "links": [
+    "https://www.rentable.co/menlo-park-ca/854-fremont-st",
+    "https://hotpads.com/fremont-854-menlo-park-ca-94025-1m75xz5/pad",
+    "https://www.padmapper.com/buildings/p1143504/fremont-854-apartments-at-854-fremont-st-menlo-park-ca-94025"
+  ],
+  "evidence": "Rentable says 'available now' at $4,200. HotPads shows $3,795, another portal $3,895 with water/garbage included. Near downtown and Caltrain.",
+  "origin": "web-search",
+  "active": true,
+  "first_seen": "2026-10-07",
+  "last_seen": "2026-10-07",
+  "facts": {
+    "rent": {
+      "v": 4200,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "beds": {
+      "v": 2,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "baths": {
+      "v": 2,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "sqft": {
+      "v": 900,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "property_type": {
+      "v": "apartment",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "available": {
+      "v": "now",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "washer_dryer": {
+      "v": "shared",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "parking": {
+      "v": "covered parking space",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "pets": {
+      "v": "no dogs or cats (HotPads)",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "listing_verified": {
+      "v": "unverified",
+      "src": "computed",
+      "conf": 1.0,
+      "stage": "E",
+      "at": "2026-10-07"
+    }
+  },
+  "location": null,
+  "metrics": null
+}

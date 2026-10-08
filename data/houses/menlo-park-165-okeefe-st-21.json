@@ -1,0 +1,62 @@
+{
+  "id": "menlo-park-165-okeefe-st-21",
+  "title": "2BR/1.5BA townhome in gated community, 165 Okeefe St #21",
+  "address": "165 Okeefe St #21",
+  "city": "Menlo Park",
+  "zip": "94025",
+  "neighborhood": "near The Willows",
+  "links": [
+    "https://ziprent.com/show/15138"
+  ],
+  "evidence": "Ziprent: 2bd/1.5ba updated townhome, $3,400. No posting date. Complex is on the East Palo Alto border; check jurisdiction.",
+  "origin": "web-search",
+  "active": true,
+  "first_seen": "2026-10-07",
+  "last_seen": "2026-10-07",
+  "facts": {
+    "rent": {
+      "v": 3400,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "beds": {
+      "v": 2,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "baths": {
+      "v": 1.5,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "property_type": {
+      "v": "townhouse",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "parking": {
+      "v": "assigned parking + storage",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "listing_verified": {
+      "v": "unverified",
+      "src": "computed",
+      "conf": 1.0,
+      "stage": "E",
+      "at": "2026-10-07"
+    }
+  },
+  "location": null,
+  "metrics": null
+}

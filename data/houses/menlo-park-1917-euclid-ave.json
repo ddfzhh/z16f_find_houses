@@ -1,0 +1,63 @@
+{
+  "id": "menlo-park-1917-euclid-ave",
+  "title": "2BR/1BA 1937 single-family home on 6,960 sqft lot, 1917 Euclid Ave",
+  "address": "1917 Euclid Ave",
+  "city": "Menlo Park",
+  "zip": "94025",
+  "neighborhood": "The Willows",
+  "links": [
+    "https://edge.apartmentiq.io/menlo-park-ca/1917-euclid-ave",
+    "https://www.mlslistings.com/property/ml81940257"
+  ],
+  "evidence": "ApartmentIQ shows asking $3,600 (availability 'Ask'). An older 2025 MLS rental listing showed $4,200. Status unconfirmed; very cheap for a house.",
+  "origin": "web-search",
+  "active": true,
+  "first_seen": "2026-10-07",
+  "last_seen": "2026-10-07",
+  "facts": {
+    "rent": {
+      "v": 3600,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "beds": {
+      "v": 2,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "baths": {
+      "v": 1,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "sqft": {
+      "v": 1000,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "property_type": {
+      "v": "house",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "listing_verified": {
+      "v": "unverified",
+      "src": "computed",
+      "conf": 1.0,
+      "stage": "E",
+      "at": "2026-10-07"
+    }
+  },
+  "location": null,
+  "metrics": null
+}

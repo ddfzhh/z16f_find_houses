@@ -1,0 +1,77 @@
+{
+  "id": "menlo-park-207-haight-st",
+  "title": "2BR/1BA house in the Willows, 207 Haight St (Action Properties)",
+  "address": "207 Haight St",
+  "city": "Menlo Park",
+  "zip": "94025",
+  "neighborhood": "The Willows",
+  "links": [
+    "https://www.forrent.com/ca/menlo-park/207-haight-st/efdggtq",
+    "https://www.apartmentlist.com/ca/menlo-park/207-haight-st"
+  ],
+  "evidence": "ForRent and ApartmentList show $6,495 'available Jul 11', year unknown. Another copy shows $5,995 'Available Now'; a Zillow-derived snippet $6,250. Recency not confirmed.",
+  "origin": "web-search",
+  "active": true,
+  "first_seen": "2026-10-07",
+  "last_seen": "2026-10-07",
+  "facts": {
+    "rent": {
+      "v": 6495,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "beds": {
+      "v": 2,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "baths": {
+      "v": 1,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "sqft": {
+      "v": 1090,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "property_type": {
+      "v": "house",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "washer_dryer": {
+      "v": "in-unit",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "pets": {
+      "v": "pet fees not specified",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "listing_verified": {
+      "v": "unverified",
+      "src": "computed",
+      "conf": 1.0,
+      "stage": "E",
+      "at": "2026-10-07"
+    }
+  },
+  "location": null,
+  "metrics": null
+}

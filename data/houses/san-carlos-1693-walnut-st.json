@@ -1,0 +1,63 @@
+{
+  "id": "san-carlos-1693-walnut-st",
+  "title": "1693 Walnut St - 3BR/2.5BA house",
+  "address": "1693 Walnut St",
+  "city": "San Carlos",
+  "zip": "94070",
+  "neighborhood": null,
+  "links": [
+    "https://www.trulia.com/p/ca/san-carlos/1693-walnut-st-san-carlos-ca-94070--2082782838",
+    "https://www.redfin.com/CA/San-Carlos/1693-Walnut-St-94070/home/802267"
+  ],
+  "evidence": "Trulia snippet: 'NEW - 2 DAYS AGO $5,745/mo 3bd 2.5ba' (snapshot date unknown).",
+  "origin": "web-search",
+  "active": true,
+  "first_seen": "2026-10-07",
+  "last_seen": "2026-10-07",
+  "facts": {
+    "rent": {
+      "v": 5745,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "beds": {
+      "v": 3,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "baths": {
+      "v": 2.5,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "sqft": {
+      "v": 1650,
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "property_type": {
+      "v": "house",
+      "src": "listing",
+      "conf": 0.3,
+      "stage": "D",
+      "at": "2026-10-07"
+    },
+    "listing_verified": {
+      "v": "unverified",
+      "src": "computed",
+      "conf": 1.0,
+      "stage": "E",
+      "at": "2026-10-07"
+    }
+  },
+  "location": null,
+  "metrics": null
+}
