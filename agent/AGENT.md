@@ -148,7 +148,7 @@ must-haves and scores 85+, and isn't in `instant_sent`.
 - Body: rent, rent each, beds and baths, walk to Caltrain, why it scores
   well, the listing link, and "Open the app" with the artifact URL.
 
-**Morning digest:** sent on the first run at or after 7:00
+**Morning digest:** sent on the first run at or after 6:30
 America/Los_Angeles when `last_digest` isn't today. It covers:
 - new houses that pass must-haves and score 70+;
 - rent drops (compared with `rents`);
