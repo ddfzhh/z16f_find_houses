@@ -1,7 +1,8 @@
 # House Hunt — Product Spec
 
-> Status: **planning complete**. Nothing is built yet. This file records what
-> we have agreed, including the platform decisions in §9.
+> Status: **first version built** (2026-10-08). App, agent and enrichment are
+> described in `CLAUDE.md`. This file records what we agreed; §9–10 hold the
+> platform decisions.
 
 ## 1. Purpose
 
