@@ -116,14 +116,13 @@ Stages: **D** discover · **E** enrich · **Q** inquire · **T** tour ·
 | Price vs. market | % above/below similar listings | E | Is it a good deal? Is it suspiciously cheap? |
 | Price history | drops, days on market | E | Negotiation room |
 
-#### Space and the two-roommate fit
+#### Space
 
 | Field | Values | Stage | Why it matters |
 |---|---|---|---|
 | Property type | house · townhouse · duplex · condo · apartment · ADU | D | Preference for a real house |
 | Bedrooms / bathrooms | numbers | D | 2 bathrooms matter a lot for roommates |
 | Square footage | number | D/Q | Overall size |
-| Bedroom sizes comparable | yes · no · unknown | Q/T | A fair rent split |
 | Privacy | rooms on separate floors or walls | T | Roommate comfort |
 | Work-from-home space | room for a desk, a quiet room | T | Matters if either works from home |
 | Shared living space | size and feel | T | Comfort |
@@ -179,8 +178,6 @@ Stages: **D** discover · **E** enrich · **Q** inquire · **T** tour ·
 |---|---|---|---|
 | Available date | date or now | D | Must be by Nov 30 |
 | Lease length | months, month-to-month option | D/Q | Flexibility |
-| **Third roommate / subletting allowed** | yes · no · unknown | Q | We may become 3 people |
-| Occupancy limit | number | Q | Same reason |
 | Pets | allowed · not · conditions | D/Q | |
 | Smoking | allowed · not | Q | |
 | Maintenance duties | who handles yard and repairs | Q | Hidden workload |
@@ -253,7 +250,7 @@ Each distance becomes a score on a simple curve, e.g. Caltrain within a
 | **D: Discover** | Scheduled search | Agent | Listing basics: address, rent, beds/baths, sqft, type, availability, listed amenities, photos, landlord contact, listing date |
 | **E: Enrich** | A new house has an address | Code (+ agent) | Coordinates, all location metrics, noise sources, flood zone, rent per person, estimated utilities, price vs. market, scam signals, verification |
 | **Score** | After D/E, after any new fact, or when the unified requirement changes | Code + agent | Fit score, breakdown, unknowns → **landlord questions** |
-| **Q: Inquire** | Status → *interested* | People (the agent drafts the message) | Answers to the questions: fees, utilities, third roommate, parking, lease terms, application requirements |
+| **Q: Inquire** | Status → *interested* | People (the agent drafts the message) | Answers to the questions: fees, utilities, parking, lease terms, application requirements |
 | **T: Tour** | Tour scheduled | People, with a **tour checklist** generated from the remaining unknowns | Condition, light, noise, room sizes, mold, water pressure, cell signal, actual parking, photos |
 | **A: Apply** | Status → *applied* | People (the agent reviews the lease) | Application requirements, lease red flags, move-in cash |
 | **Close** | Signed, rejected or gone | People / agent | Reason (rejections teach the agent) |
