@@ -145,10 +145,10 @@ out center tags;"""
         q = f"""[out:json][timeout:120];
 way["highway"="motorway"]["ref"~"{ref}"]({s - 0.05},{w - 0.05},{n + 0.05},{e + 0.05});
 node(w)["highway"="motorway_junction"];
-out tags;"""
+out;"""
         pois[key] = [{"name": f"{ref} exit {el.get('tags', {}).get('ref', '')}".strip()
                       + (f" ({el['tags']['exit_to']})" if el.get("tags", {}).get("exit_to") else ""),
-                      "lat": el["lat"], "lng": el["lon"]} for el in overpass(q)]
+                      "lat": el["lat"], "lng": el["lon"]} for el in overpass(q) if "lat" in el]
     log("pois:", {k: len(v) for k, v in pois.items()})
     return pois
 
