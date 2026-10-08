@@ -77,6 +77,8 @@ h1, h2, h3 { font-family: var(--font-display); font-weight: 700; text-wrap: bala
 /* Bauhaus blocks: an outline layer (.blk) holding a fill layer (.blk-in) cut to the same polygon */
 .blk { --c: var(--red); --shape: polygon(0 0, 100% 0, 86% 100%, 0 100%); display: inline-block; background: var(--line); clip-path: var(--shape); padding: 2px; max-width: 100%; }
 .blk > .blk-in { display: block; background: var(--c); color: #131313; clip-path: var(--shape); padding: 8px 40px 8px 14px; }
+.blk > .blk-in.rent { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.facts b { margin-right: 2px; }
 .blk.slant-l { --shape: polygon(8% 0, 100% 0, 100% 100%, 0 100%); }
 .blk.slant-l > .blk-in { padding: 6px 14px 6px 26px; }
 
@@ -260,6 +262,12 @@ table.grid { border-collapse: collapse; width: 100%; font-size: 14px; }
 .answer { white-space: pre-wrap; background: var(--surface-2); border-left: 4px solid var(--blue); padding: 10px 12px; font-size: 14px; overflow-wrap: anywhere; }
 .status-row { display: flex; gap: 6px; flex-wrap: wrap; }
 .status-row .chip[aria-pressed="true"] { background: var(--red); }
+.fold > summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.fold > summary::-webkit-details-marker { display: none; }
+.fold > summary::after { content: "+"; font-family: var(--font-mono); font-weight: 700; font-size: 18px; line-height: 1; }
+.fold[open] > summary::after { content: "–"; }
+.fold[open] > summary { margin-bottom: 10px; }
+.fold > summary .muted { font-family: var(--font-mono); font-size: 12px; margin-left: auto; }
 .links { display: flex; flex-direction: column; gap: 4px; font-size: 14px; overflow-wrap: anywhere; font-weight: 700; }
 
 /* requirements */
@@ -301,11 +309,10 @@ table.grid { border-collapse: collapse; width: 100%; font-size: 14px; }
       <div id="map" role="application" aria-label="Map of houses"></div>
       <div class="map-note" id="map-note" hidden></div>
       <div class="map-legend" id="map-legend">
-        <span><i style="background:var(--green)"></i>Score 70+</span>
+        <span><i style="background:var(--green)"></i>70+</span>
         <span><i style="background:var(--yellow)"></i>50–69</span>
-        <span><i style="background:var(--red)"></i>Below 50 or fails a must-have</span>
-        <span><i style="background:transparent;border:2px dashed var(--muted)"></i>Approximate location</span>
-        <span><i style="background:var(--ink);border-radius:2px"></i>Caltrain station</span>
+        <span><i style="background:var(--red)"></i>&lt;50</span>
+        <span><i style="background:var(--ink);border-radius:2px"></i>Caltrain</span>
       </div>
     </div>
   </section>
@@ -315,10 +322,9 @@ table.grid { border-collapse: collapse; width: 100%; font-size: 14px; }
       <div class="panel" id="unified-panel"></div>
       <div style="display:flex;flex-direction:column;gap:14px;min-width:0">
         <div class="panel">
-          <div class="panel-head"><h3>Your requirements</h3><span class="small muted" id="my-req-saved"></span></div>
-          <p class="small muted" style="margin:0">Write what you want in plain English: budget, must-haves, nice-to-haves, deal-breakers. Only you edit this. The agent merges it with your friend's into the plan on this page.</p>
-          <textarea id="my-req" rows="9" placeholder="e.g. Under $2,500 for my share. I want to walk to Caltrain. I work from home, so I need a quiet room. No basement units."></textarea>
-          <div class="toolbar-row"><button class="btn primary" id="save-req">Save and update the plan</button></div>
+          <div class="panel-head"><h3>You want</h3><span class="small muted" id="my-req-saved"></span></div>
+          <textarea id="my-req" rows="9" placeholder="Budget, must-haves, nice-to-haves, deal-breakers…"></textarea>
+          <div class="toolbar-row"><button class="btn primary" id="save-req">Save</button></div>
         </div>
         <div id="other-reqs"></div>
       </div>
@@ -326,8 +332,7 @@ table.grid { border-collapse: collapse; width: 100%; font-size: 14px; }
   </section>
 
   <section class="view" id="view-notes" aria-label="Notes" hidden>
-    <h2 style="font-size:20px;margin-bottom:4px">Latest notes</h2>
-    <p class="small muted" style="margin:0 0 12px">Everything either of you wrote about any house, newest first.</p>
+    <h2 style="font-size:20px;margin-bottom:12px">Notes</h2>
     <div class="panel" id="notes-feed"></div>
   </section>
 
@@ -335,24 +340,22 @@ table.grid { border-collapse: collapse; width: 100%; font-size: 14px; }
     <div class="req-grid">
       <div class="panel">
         <h3>Paste a listing</h3>
-        <p class="small muted" style="margin:0">Saw a place on Zillow, Craigslist, a sign on the street? Paste the listing text and/or add a screenshot. Claude reads it right away and adds the house. A link on its own is passed to the search agent, which opens it on its next run (Zillow and Redfin links need the text or a screenshot).</p>
-        <textarea id="paste-text" rows="7" placeholder="Paste the listing text or a link here"></textarea>
+        <textarea id="paste-text" rows="7" placeholder="Listing text or link"></textarea>
         <div class="toolbar-row">
-          <label class="btn" for="paste-img">Add screenshot</label>
+          <label class="btn" for="paste-img">Screenshot</label>
           <input type="file" id="paste-img" accept="image/*" multiple hidden>
           <span class="small muted" id="paste-img-name"></span>
         </div>
-        <div class="toolbar-row"><button class="btn primary" id="paste-go">Add this listing</button><span class="small muted" id="paste-status"></span></div>
+        <div class="toolbar-row"><button class="btn primary" id="paste-go">Add</button><span class="small muted" id="paste-status"></span></div>
       </div>
       <div style="display:flex;flex-direction:column;gap:14px;min-width:0">
         <div class="panel">
           <h3>Ask the agent</h3>
-          <p class="small muted" style="margin:0">A one-off search request, e.g. "Look for anything with a garage under $4,800 in San Carlos." The agent handles it on its next run and replies here.</p>
-          <textarea id="req-text" rows="3"></textarea>
-          <div class="toolbar-row"><button class="btn" id="req-go">Send to the agent</button></div>
+          <textarea id="req-text" rows="3" placeholder="e.g. garage, under $4,800, San Carlos"></textarea>
+          <div class="toolbar-row"><button class="btn" id="req-go">Send</button></div>
           <div id="requests"></div>
         </div>
-        <div class="panel"><h3>Agent activity</h3><div id="runs" class="small"></div></div>
+        <div class="panel"><h3>Agent runs</h3><div id="runs" class="small"></div></div>
       </div>
     </div>
   </section>
@@ -369,14 +372,14 @@ table.grid { border-collapse: collapse; width: 100%; font-size: 14px; }
   <div class="sheet-body">
     <div class="panel" id="d-hero"></div>
     <div class="panel" id="d-decide"></div>
-    <div class="panel"><div class="panel-head"><h3>Notes</h3><span class="small muted">both of you see these</span></div>
+    <div class="panel"><h3>Notes</h3>
       <div id="d-notes"></div>
-      <textarea id="d-note-text" rows="3" placeholder="Quick note: what you saw, what the landlord said…"></textarea>
+      <textarea id="d-note-text" rows="3" placeholder="Quick note"></textarea>
       <div class="toolbar-row">
-        <label class="btn sm" for="d-note-media">Photos / video</label>
+        <label class="btn sm" for="d-note-media">📷</label>
         <input type="file" id="d-note-media" accept="image/*,video/mp4,video/webm,video/quicktime" multiple hidden>
         <span class="small muted" id="d-note-media-name"></span>
-        <button class="btn primary sm" id="d-note-save" style="margin-left:auto">Add note</button>
+        <button class="btn primary sm" id="d-note-save" style="margin-left:auto">Add</button>
       </div>
     </div>
     <div class="panel" id="d-score"></div>
@@ -385,13 +388,11 @@ table.grid { border-collapse: collapse; width: 100%; font-size: 14px; }
     <div class="panel" id="d-tour"></div>
     <div class="panel" id="d-facts"></div>
     <div class="panel" id="d-location"></div>
-    <div class="panel"><h3>Ask Claude about this place</h3>
-      <textarea id="d-ask-text" rows="2" placeholder="e.g. Is this a good deal for us? What should we check on the tour?"></textarea>
-      <div class="toolbar-row"><button class="btn" id="d-ask-go">Ask</button><button class="btn ghost" id="d-ask-stop" hidden>Stop</button></div>
+    <div class="panel"><details class="fold" id="fold-ask"><summary><h3>Ask Claude</h3></summary>
+      <textarea id="d-ask-text" rows="2" placeholder="Is this a good deal?"></textarea>
+      <div class="toolbar-row" style="margin-top:8px"><button class="btn" id="d-ask-go">Ask</button><button class="btn ghost" id="d-ask-stop" hidden>Stop</button></div>
       <div class="answer" id="d-ask-out" hidden></div>
-      <p class="small muted" style="margin:0">Uses your own Claude account.</p>
-    </div>
-    <div class="panel" id="d-links"></div>
+    </details></div>
   </div>
 </div>
 <div class="toast" id="toast" role="status" hidden></div>
@@ -715,16 +716,16 @@ function toolbarHTML(where) {
   const f = S.filters;
   const chip = (attr, val, label, on) => `<button class="chip" data-${attr}="${esc(val)}" aria-pressed="${on}">${esc(label)}</button>`;
   return `<div class="toolbar-row">
-      <input class="search" type="search" id="q-${where}" placeholder="Search address or neighborhood" value="${esc(f.q)}" aria-label="Search">
+      <input class="search" type="search" id="q-${where}" placeholder="Search" value="${esc(f.q)}" aria-label="Search">
       <select class="sel" id="sort-${where}" aria-label="Sort">
-        ${[["score", "Best match"], ["cheap", "Cheapest"], ["caltrain", "Closest to Caltrain"], ["big", "Biggest"], ["newest", "Newest"]].map(([k, l]) => `<option value="${k}" ${f.sort === k ? "selected" : ""}>${l}</option>`).join("")}
+        ${[["score", "Best"], ["cheap", "Cheapest"], ["caltrain", "Near Caltrain"], ["big", "Biggest"], ["newest", "Newest"]].map(([k, l]) => `<option value="${k}" ${f.sort === k ? "selected" : ""}>${l}</option>`).join("")}
       </select>
       ${where === "houses" ? `<div class="seg" role="group" aria-label="Layout"><button data-layout="cards" aria-pressed="${S.layout === "cards"}">Cards</button><button data-layout="table" aria-pressed="${S.layout === "table"}">Table</button></div>` : ""}
     </div>
     <div class="chips">
       ${CITIES.map(c => chip("city", c, c, f.cities.has(c))).join("")}
       ${chip("beds", "2", "2 bd", f.beds.has("2"))}${chip("beds", "3", "3 bd", f.beds.has("3"))}
-      ${chip("toggle", "mustsOnly", "Meets must-haves", f.mustsOnly)}${chip("toggle", "hideRejected", "Hide rejected & gone", f.hideRejected)}
+      ${chip("toggle", "mustsOnly", "Must-haves", f.mustsOnly)}${chip("toggle", "hideRejected", "Hide rejected", f.hideRejected)}
     </div>`;
 }
 
@@ -739,23 +740,19 @@ function cardHTML(r) {
   const badges = [];
   if (st !== "new") badges.push(`<span class="badge ${st === "rejected" || st === "gone" ? "bad" : st === "signed" ? "good" : "accent"}">${esc(st === "gone" ? "Gone" : STATUSES.find(s => s[0] === st)?.[1])}</span>`);
   if (isNew) badges.push(`<span class="badge accent">New</span>`);
-  if (ev.failsMust) badges.push(`<span class="badge bad">Fails a must-have</span>`);
-  if (fv(h, "listing_verified") === "unverified") badges.push(`<span class="badge mid">Unverified listing</span>`);
-  if (h.location?.approx) badges.push(`<span class="badge">Approx. location</span>`);
-  if (ev.unknownCount) badges.push(`<span class="badge">❓ ${ev.unknownCount} unknown</span>`);
-  if (up || down) badges.push(`<span class="badge">👍 ${up} · 👎 ${down}</span>`);
+  if (ev.failsMust) badges.push(`<span class="badge bad">✕ must-have</span>`);
+  if (up || down) badges.push(`<span class="badge">👍${up} 👎${down}</span>`);
+  if (notes.length) badges.push(`<span class="badge">✎ ${notes.length}</span>`);
   const src = sources(h)[0];
   return `<div class="card" role="button" tabindex="0" data-open="${esc(h.id)}">
     <div class="card-head">
-      <div><div class="addr">${esc(titleOf(h))}</div><div class="where">${esc(h.city)}${h.neighborhood ? " · " + esc(h.neighborhood) : ""}</div></div>
+      <div><div class="addr">${esc(titleOf(h))}</div><div class="where">${esc(h.city)}</div></div>
       <div class="score ${scoreClass(ev)}" title="Match score">${ev.score}</div>
     </div>
-    <div class="blk"><div class="blk-in rent"><b>${money(rent)}</b><span>/mo · ${money(rent ? rent / 2 : null)} each</span></div></div>
-    <div class="facts"><span><b>${beds ?? "?"}</b> bd</span><span><b>${baths ?? "?"}</b> ba</span><span><b>${sqft ? sqft.toLocaleString() : "?"}</b> sqft</span>${type ? `<span>${esc(type)}</span>` : ""}
-      <span>🚆 ${ct?.walk_min != null ? `<b>${ct.walk_min} min</b> walk to ${esc(ct.name)}` : "distance pending"}</span></div>
+    <div class="blk"><div class="blk-in rent"><b>${money(rent)}</b><span>${money(rent ? rent / 2 : null)} ea</span></div></div>
+    <div class="facts"><span><b>${beds ?? "?"}</b>bd</span><span><b>${baths ?? "?"}</b>ba</span><span><b>${sqft ? sqft.toLocaleString() : "?"}</b>ft²</span>${ct?.walk_min != null && !h.location?.approx ? `<span>🚆<b>${ct.walk_min}</b>min</span>` : ""}
+      ${src ? `<a class="src-link" href="${esc(src.url)}" target="_blank" rel="noopener noreferrer" style="margin-left:auto">Listing ↗</a>` : ""}</div>
     ${badges.length ? `<div class="badges">${badges.join("")}</div>` : ""}
-    ${last ? `<div class="lastnote"><b>${esc(nameOf(last.by))}:</b> ${esc(last.text)}</div>` : ""}
-    ${src ? `<a class="src-link" href="${esc(src.url)}" target="_blank" rel="noopener noreferrer">View listing on ${esc(src.host)} ↗</a>` : ""}
   </div>`;
 }
 
@@ -791,7 +788,7 @@ function renderHouses() {
   if (!S.loaded) { $("houses-list").innerHTML = `<div class="empty"><h2>Loading houses…</h2><p>Your shortlist appears here in a moment.</p></div>`; return; }
   const list = rows();
   const total = [...S.houses.values()].filter(h => h.active !== false).length;
-  $("houses-summary").textContent = `${list.length} shown · ${total} active houses${S.unified ? ` · scored against plan v${S.unified.version}` : " · default scoring until your plan is merged"}`;
+  $("houses-summary").textContent = `${list.length} of ${total} houses`;
   if (!S.houses.size) { $("houses-list").innerHTML = `<div class="empty"><h2>No houses yet</h2><p>The search agent adds houses on its next run, or paste one in the Add tab.</p></div>`; return; }
   if (!list.length) { $("houses-list").innerHTML = `<div class="empty"><h2>Nothing matches these filters</h2><p>Try turning off “Meets must-haves” or clearing a city.</p></div>`; return; }
   $("houses-list").innerHTML = S.layout === "table" ? tableHTML(list) : `<div class="cards">${list.map(cardHTML).join("")}</div>`;
@@ -900,39 +897,36 @@ function renderDetail() {
   setPanel("d-hero", `<div class="hero-shape"><div><div class="hero-addr">${esc(titleOf(h))}</div>
       <div class="hero-where">${esc(h.city)}${h.neighborhood ? " · " + esc(h.neighborhood) : ""}${h.zip ? " " + esc(h.zip) : ""}</div></div></div>
     <div class="hero"><div style="min-width:0">
-      <div class="blk"><div class="blk-in rent"><b>${money(rent)}</b><span>/mo · ${money(rent ? rent / 2 : null)} each</span></div></div>
-      <div class="facts"><span><b>${fv(h, "beds") ?? "?"}</b> bd</span><span><b>${fv(h, "baths") ?? "?"}</b> ba</span><span><b>${fv(h, "sqft")?.toLocaleString() ?? "?"}</b> sqft</span><span>${esc(fv(h, "property_type") ?? "")}</span><span>available ${esc(fv(h, "available") ?? "?")}</span></div>
+      <div class="blk"><div class="blk-in rent"><b>${money(rent)}</b><span>${money(rent ? rent / 2 : null)} ea</span></div></div>
+      <div class="facts"><span><b>${fv(h, "beds") ?? "?"}</b> bd</span><span><b>${fv(h, "baths") ?? "?"}</b> ba</span><span><b>${fv(h, "sqft")?.toLocaleString() ?? "?"}</b> sqft</span><span>${esc(fv(h, "property_type") ?? "")}</span><span>avail. ${esc(fv(h, "available") ?? "?")}</span></div>
     </div><div class="score ${scoreClass(ev)}" style="width:64px;height:64px;font-size:22px">${ev.score}</div></div>
-    <div class="badges">${ev.failsMust ? '<span class="badge bad">Fails a must-have</span>' : '<span class="badge good">Passes must-haves we know</span>'}
-      ${h.active === false ? '<span class="badge bad">Off the market</span>' : ""}${h.origin === "pasted" ? '<span class="badge">Pasted by you</span>' : ""}
-      ${h.location?.approx ? '<span class="badge">Approximate location</span>' : ""}</div>
-    ${srcs.length ? `<div class="src-buttons">${srcs.map((x, i) => `<a class="btn ${i ? "sm" : "primary"}" href="${esc(x.url)}" target="_blank" rel="noopener noreferrer">${i ? esc(x.host) : "Open original listing on " + esc(x.host)} ↗</a>`).join("")}</div>` : `<p class="small muted" style="margin:0">No source link (pasted listing).</p>`}
-    ${h.evidence ? `<p class="small muted" style="margin:0">${esc(h.evidence)}</p>` : ""}`);
+    ${ev.failsMust || h.active === false ? `<div class="badges">${ev.failsMust ? '<span class="badge bad">✕ must-have</span>' : ""}${h.active === false ? '<span class="badge bad">Off market</span>' : ""}</div>` : ""}
+    ${srcs.length ? `<div class="src-buttons">${srcs.map((x, i) => `<a class="btn ${i ? "sm" : "primary"}" href="${esc(x.url)}" target="_blank" rel="noopener noreferrer">${i ? esc(x.host) : "Listing"} ↗</a>`).join("")}</div>` : ""}`);
 
   // decide: votes + status
   const votes = votesFor(h.id); const mine = votes.find(v => v.by === S.uid);
   const sdoc = S.status.get(h.id);
-  setPanel("d-decide", `<div class="panel-head"><h3>Decide</h3>${sdoc ? `<span class="small muted">${esc(nameOf(sdoc.by))} set “${esc(sdoc.s)}” ${ago(sdoc.at)}</span>` : ""}</div>
+  setPanel("d-decide", `<h3>Decide</h3>
     <div class="votes"><button class="btn sm" data-vote="1" aria-pressed="${mine?.v > 0}">👍 ${votes.filter(v => v.v > 0).length}</button><button class="btn sm" data-vote="-1" aria-pressed="${mine?.v < 0}">👎 ${votes.filter(v => v.v < 0).length}</button>
-      <span class="small muted">${votes.map(v => `${esc(nameOf(v.by))} ${v.v > 0 ? "👍" : "👎"}`).join(" · ")}</span></div>
+</div>
     <div class="status-row">${STATUSES.map(([k, l]) => `<button class="chip" data-status="${k}" aria-pressed="${st === k}">${l}</button>`).join("")}</div>
-    <div id="reject-box" ${S.rejectOpen === h.id ? "" : "hidden"}><input type="text" id="reject-reason" placeholder="Why? A few words — the agent learns from this" value="${esc(sdoc?.reason || "")}"><div class="toolbar-row" style="margin-top:6px"><button class="btn sm primary" id="reject-save">Reject</button></div></div>
+    <div id="reject-box" ${S.rejectOpen === h.id ? "" : "hidden"}><input type="text" id="reject-reason" placeholder="Why?" value="${esc(sdoc?.reason || "")}"><div class="toolbar-row" style="margin-top:6px"><button class="btn sm primary" id="reject-save">Reject</button></div></div>
     ${st === "rejected" && sdoc?.reason ? `<p class="small" style="margin:0">Reason: ${esc(sdoc.reason)}</p>` : ""}`);
 
   // notes
   const ns = notesFor(h.id);
-  setPanel("d-notes", ns.length ? ns.map(noteHTML).join("") : `<p class="small muted" style="margin:0">No notes yet. Add the first one below.</p>`);
+  setPanel("d-notes", ns.length ? ns.map(noteHTML).join("") : "");
 
   // score breakdown
   const parts = [...ev.parts].sort((a, b) => b.w - a.w);
-  setPanel("d-score", `<div class="panel-head"><h3>Why ${ev.score}</h3><span class="small muted">${S.unified ? `weights from plan v${S.unified.version}` : "default weights"}</span></div>
+  const fo = id => S.folds?.has(id) ? "open" : "";
+  setPanel("d-score", `<details class="fold" id="fold-score" ${fo("fold-score")}><summary><h3>Why ${ev.score}</h3></summary>
     <div class="bars">${parts.map(p => { const pct = p.unknown ? 50 : Math.round(p.v * 100); const cls = p.unknown ? "unk" : p.v >= 0.66 ? "" : p.v >= 0.33 ? "mid" : "bad";
-      return `<div class="bar"><span>${esc(p.label)}${p.unknown ? " ❓" : ""}</span><div class="track"><div class="fill ${cls}" style="width:${pct}%"></div></div><span class="num small muted" title="weight">×${p.w}</span></div>`; }).join("")}</div>
-    <p class="small muted" style="margin:0">❓ = unknown, counted at half credit until someone finds out.</p>`);
+      return `<div class="bar"><span>${esc(p.label)}${p.unknown ? " ❓" : ""}</span><div class="track"><div class="fill ${cls}" style="width:${pct}%"></div></div><span class="num small muted" title="weight">×${p.w}</span></div>`; }).join("")}</div></details>`);
 
   // musts
   const mk = ok => ok === true ? '<span class="mark pass">✓</span>' : ok === false ? '<span class="mark fail">✕</span>' : '<span class="mark unk">?</span>';
-  setPanel("d-musts", `<h3>Must-haves and deal-breakers</h3><ul class="checks">
+  setPanel("d-musts", `<h3>Must-haves</h3><ul class="checks">
     ${ev.mustRes.map(m => `<li>${mk(m.ok)}<span>${esc(m.text)}</span></li>`).join("")}
     ${ev.brkRes.map(b => `<li>${mk(b.hit === true ? false : b.hit === false ? true : null)}<span>No: ${esc(b.text)}</span></li>`).join("")}</ul>`);
 
@@ -940,38 +934,35 @@ function renderDetail() {
   const qs = [];
   for (const g of CATALOG) for (const f of g.fields) if (f.ask && (h.facts?.[f.k]?.v == null)) qs.push(f.ask);
   for (const q of h.questions || []) if (!qs.includes(q)) qs.push(q);
-  setPanel("d-questions", `<div class="panel-head"><h3>Questions for the landlord</h3><button class="btn sm" id="draft-msg" ${qs.length ? "" : "disabled"}>Draft a message</button></div>
-    ${qs.length ? `<ul class="checks">${qs.map(q => `<li><span class="mark unk">?</span><span>${esc(q)}</span></li>`).join("")}</ul>` : `<p class="small muted" style="margin:0">Nothing left to ask.</p>`}
-    <div class="answer" id="draft-out" ${S.drafts?.[h.id] ? "" : "hidden"}>${esc(S.drafts?.[h.id] || "")}</div>
-    <p class="small muted" style="margin:0">Got answers? Write them as a note; the facts update automatically.</p>`);
+  setPanel("d-questions", `<details class="fold" id="fold-q" ${fo("fold-q")}><summary><h3>Ask landlord</h3><span class="muted">${qs.length}</span></summary>
+    ${qs.length ? `<ul class="checks">${qs.map(q => `<li><span class="mark unk">?</span><span>${esc(q)}</span></li>`).join("")}</ul>
+    <div class="toolbar-row" style="margin-top:8px"><button class="btn sm" id="draft-msg">Draft message</button></div>` : ""}
+    <div class="answer" id="draft-out" ${S.drafts?.[h.id] ? "" : "hidden"}>${esc(S.drafts?.[h.id] || "")}</div></details>`);
 
   // tour checklist
   const tourFields = CATALOG.flatMap(g => g.fields).filter(f => f.tour);
-  setPanel("d-tour", `<div class="panel-head"><h3>Tour checklist</h3><span class="small muted">tap what you see</span></div>
+  const toured = tourFields.filter(f => h.facts?.[f.k]?.src === "tour").length;
+  setPanel("d-tour", `<details class="fold" id="fold-tour" ${fo("fold-tour")}><summary><h3>Tour</h3><span class="muted">${toured}/${tourFields.length}</span></summary>
     ${tourFields.map(f => { const cur = h.facts?.[f.k]; const opts = f.opts || ["good", "ok", "poor"];
-      return `<div class="tour-item"><span>${esc(f.label)}${cur?.src === "tour" ? ' <span class="src tour">✓ checked</span>' : ""}</span><div class="opts">${opts.map(o => `<button class="chip" data-tour="${f.k}" data-val="${esc(o)}" aria-pressed="${cur?.src === "tour" && cur.v === o}">${esc(o)}</button>`).join("")}</div></div>`; }).join("")}`);
+      return `<div class="tour-item"><span>${esc(f.label)}${cur?.src === "tour" ? ' <span class="src tour">✓</span>' : ""}</span><div class="opts">${opts.map(o => `<button class="chip" data-tour="${f.k}" data-val="${esc(o)}" aria-pressed="${cur?.src === "tour" && cur.v === o}">${esc(o)}</button>`).join("")}</div></div>`; }).join("")}</details>`);
 
   // facts
-  setPanel("d-facts", `<h3>Everything we know</h3>${CATALOG.map(g => `<div class="label">${esc(g.group)}</div><dl class="kv">${g.fields.map(f => `<dt>${esc(f.label)}</dt><dd>${factCell(h, f.k)}</dd>`).join("")}</dl>`).join("")}`);
+  const known = CATALOG.flatMap(g => g.fields).filter(f => h.facts?.[f.k]?.v != null && h.facts[f.k].v !== "");
+  setPanel("d-facts", `<details class="fold" id="fold-facts" ${fo("fold-facts")}><summary><h3>Details</h3><span class="muted">${known.length} known</span></summary>
+    <dl class="kv">${known.map(f => `<dt>${esc(f.label)}</dt><dd>${factCell(h, f.k)}</dd>`).join("")}</dl></details>`);
 
   // location
   const M = h.metrics;
-  setPanel("d-location", `<div class="panel-head"><h3>Location</h3><span class="small muted">${M ? "street routes, calculated" : ""}</span></div>
-    ${!M ? `<p class="small muted" style="margin:0">Distances are calculated shortly after a house is added (needs an address).</p>` : `
-      ${h.location?.approx ? `<p class="small" style="margin:0">⚠️ No exact address, so these are measured from the city center.</p>` : ""}
+  const quick = M && !h.location?.approx ? [["🚆", M.caltrain?.walk_min], ["🛒", M.supermarket?.walk_min]].filter(x => x[1] != null).map(x => `${x[0]} ${x[1]}m`).join("  ") : (M ? "approx." : "pending");
+  setPanel("d-location", `<details class="fold" id="fold-loc" ${fo("fold-loc")}><summary><h3>Location</h3><span class="muted">${quick}</span></summary>
+    ${!M ? "" : `
       <dl class="kv">${METRICS.map(([k, label, mode]) => { const r = M[k]; if (!r) return `<dt>${label}</dt><dd class="unknown">unknown</dd>`;
         const t = mode === "walk" && r.walk_min != null ? `${r.walk_min} min walk` : r.drive_min != null ? `${r.drive_min} min drive` : `${(r.straight_m / 1609).toFixed(1)} mi`;
-        return `<dt>${label}<div class="small muted">${esc(r.name)}</div></dt><dd class="num">${t}${mode === "walk" && r.drive_min != null && r.walk_min > 20 ? `<div class="small muted">${r.drive_min} min drive</div>` : ""}</dd>`; }).join("")}
-      <dt>Caltrain tracks</dt><dd class="num">${M.noise?.caltrain_tracks_m != null ? M.noise.caltrain_tracks_m + " m away" : "?"}</dd>
-      <dt>US-101</dt><dd class="num">${M.noise?.us101_m != null ? M.noise.us101_m + " m away" : "?"}</dd>
-      <dt>El Camino Real</dt><dd class="num">${M.noise?.el_camino_m != null ? M.noise.el_camino_m + " m away" : "?"}</dd>
-      <dt>Flood zone (FEMA)</dt><dd>${M.flood_zone?.zone == null ? '<span class="unknown">unknown</span>' : esc(M.flood_zone.zone) + (M.flood_zone.high_risk ? " ⚠️ high risk" : "")}</dd>
-      <dt>Walkability (our estimate)</dt><dd class="num">${M.walkability ?? "?"}/100</dd></dl>`}`);
+        return `<dt>${label}</dt><dd class="num">${t}</dd>`; }).join("")}
+      <dt>Tracks / 101 / El Camino</dt><dd class="num">${[M.noise?.caltrain_tracks_m, M.noise?.us101_m, M.noise?.el_camino_m].map(v => v != null ? v + "m" : "?").join(" / ")}</dd>
+      <dt>Flood zone</dt><dd>${M.flood_zone?.zone == null ? '<span class="unknown">unknown</span>' : esc(M.flood_zone.zone) + (M.flood_zone.high_risk ? " ⚠️ high risk" : "")}</dd>
+      <dt>Walkability</dt><dd class="num">${M.walkability ?? "?"}/100</dd></dl>`}</details>`);
 
-  // links
-  const links = (h.links || []).map(safeUrl).filter(Boolean);
-  setPanel("d-links", `<h3>Listing sources</h3><div class="links">${links.length ? links.map(u => `<a href="${esc(u)}" target="_blank" rel="noopener noreferrer">${esc(new URL(u).hostname.replace(/^www\./, ""))} ↗</a>`).join("") : '<span class="muted small">No link (pasted listing).</span>'}</div>
-    <p class="small muted" style="margin:0">First seen ${esc(h.first_seen || "?")} · last seen ${esc(h.last_seen || "?")}</p>`);
 }
 function noteHTML(n) {
   const media = (n.media || []).map(m => m.type?.startsWith("video") ? `<video src="/_blob/${esc(m.id)}" controls preload="metadata"></video>` : `<a href="/_blob/${esc(m.id)}" target="_blank" rel="noopener"><img src="/_blob/${esc(m.id)}" alt="Tour photo" loading="lazy"></a>`).join("");
@@ -987,28 +978,26 @@ function renderReq() {
   const u = S.unified;
   const who = from => (from || []).map(id => nameOf(id)).join(" & ");
   const mustCount = m => { let n = 0; for (const h of S.houses.values()) if (h.active !== false && runCheck(h, m.check) === false) n++; return n; };
-  $("unified-panel").innerHTML = `<div class="panel-head"><h3>What we're searching for</h3><span class="small muted">${u ? `plan v${u.version} · ${ago(u.at)}` : "not merged yet"}</span></div>
-    ${!u ? `<p style="margin:0">No merged plan yet. Until each of you saves requirements, houses are scored with defaults: 2–3 bedrooms, the three cities, available by Nov 30.</p>` : `
-      ${u.summary ? `<p style="margin:0">${esc(u.summary)}</p>` : ""}
-      <div class="label">Must-haves (filters)</div>
-      ${(u.musts || []).map(m => `<div class="item"><span>${esc(m.text)}${m.check ? ` <span class="small muted">· excludes ${mustCount(m)}</span>` : ""}</span><span class="who">${esc(who(m.from))}</span></div>`).join("") || '<p class="small muted">None.</p>'}
-      <div class="label">Preferences (ranking)</div>
-      ${(u.prefs || []).map(p => `<div class="item"><span>${esc(p.text)} <span class="small muted">· ${esc(p.strength || "")}</span></span><span class="who">${esc(who(p.from))}</span></div>`).join("") || '<p class="small muted">None.</p>'}
-      <div class="label">Deal-breakers</div>
+  $("unified-panel").innerHTML = `<div class="panel-head"><h3>Our plan</h3><span class="small muted">${u ? `v${u.version} · ${ago(u.at)}` : ""}</span></div>
+    ${!u ? `<p class="muted" style="margin:0">Not merged yet. Write what you want →</p>` : `
+      
+      <div class="label">Must</div>
+      ${(u.musts || []).map(m => `<div class="item"><span>${esc(m.text)}${m.check ? ` <span class="small muted">−${mustCount(m)}</span>` : ""}</span><span class="who">${esc(who(m.from))}</span></div>`).join("") || '<p class="small muted">None.</p>'}
+      <div class="label">Nice</div>
+      ${(u.prefs || []).map(p => `<div class="item"><span>${esc(p.text)} </span><span class="who">${esc(who(p.from))}</span></div>`).join("") || '<p class="small muted">None.</p>'}
+      <div class="label">Never</div>
       ${(u.breakers || []).map(b => `<div class="item"><span>${esc(b.text)}</span><span class="who">${esc(who(b.from))}</span></div>`).join("") || '<p class="small muted">None.</p>'}
-      ${(u.conflicts || []).length ? `<div class="label">Conflicts and how they were resolved</div>${u.conflicts.map(c => `<div class="conflict"><b>${esc(c.topic)}</b><span>${esc(c.resolution)}</span><span class="small muted">${esc(c.why)}</span></div>`).join("")}` : ""}
-      ${(u.loosened || []).length ? `<div class="label">Loosened so the search isn't empty</div>${u.loosened.map(l => `<div class="item"><span>${esc(l.text)}</span><span class="who">${esc(l.why)}</span></div>`).join("")}` : ""}
-      <div class="label">Score weights</div>
-      <div class="weights">${Object.entries(weights()).filter(([, w]) => w > 0).sort((a, b) => b[1] - a[1]).map(([k, w]) => `<span class="badge">${esc(SCORE_KEYS[k][0])} ×${w}</span>`).join("")}</div>
-      ${u.changes ? `<div class="label">What changed</div><p class="small" style="margin:0">${esc(u.changes)}</p>` : ""}`}
-    <div class="toolbar-row"><button class="btn" id="merge-now" ${S.reqs.size ? "" : "disabled"}>Re-merge now</button><span class="small muted" id="merge-status">${esc(S.mergeMsg || "")}</span></div>`;
+      ${(u.conflicts || []).length ? `<div class="label">Conflicts</div>${u.conflicts.map(c => `<div class="conflict"><b>${esc(c.topic)}</b><span>${esc(c.resolution)}</span></div>`).join("")}` : ""}
+      ${(u.loosened || []).length ? `<div class="label">Loosened</div>${u.loosened.map(l => `<div class="item"><span>${esc(l.text)}</span><span class="who">${esc(l.why)}</span></div>`).join("")}` : ""}
+      <details class="fold"><summary><span class="label">Weights</span></summary><div class="weights">${Object.entries(weights()).filter(([, w]) => w > 0).sort((a, b) => b[1] - a[1]).map(([k, w]) => `<span class="badge">${esc(SCORE_KEYS[k][0])} ×${w}</span>`).join("")}</div></details>`}
+    <div class="toolbar-row"><button class="btn" id="merge-now" ${S.reqs.size ? "" : "disabled"}>Re-merge</button><span class="small muted" id="merge-status">${esc(S.mergeMsg || "")}</span></div>`;
   const mine = S.reqs.get(S.uid);
   const ta = $("my-req");
   if (mine && document.activeElement !== ta && !ta.dataset.dirty) ta.value = mine.text || "";
   $("my-req-saved").textContent = mine ? "saved " + ago(mine.at) : "";
   const others = [...S.reqs.entries()].filter(([id]) => id !== S.uid);
-  $("other-reqs").innerHTML = others.map(([id, r]) => `<div class="panel"><div class="panel-head"><h3>${esc(nameOf(id))}'s requirements</h3><span class="small muted">${ago(r.at)}</span></div><div class="note-text">${esc(r.text)}</div></div>`).join("")
-    || `<div class="panel"><p class="small muted" style="margin:0">Your friend's requirements will appear here once they write them.</p></div>`;
+  $("other-reqs").innerHTML = others.map(([id, r]) => `<div class="panel"><div class="panel-head"><h3>${esc(nameOf(id))} wants</h3><span class="small muted">${ago(r.at)}</span></div><div class="note-text">${esc(r.text)}</div></div>`).join("")
+    || "";
 }
 
 // ---------- notes feed, requests, runs ----------
@@ -1278,6 +1267,7 @@ document.addEventListener("click", async e => {
   }
 });
 $("sheet-back").addEventListener("click", closeHouse);
+document.addEventListener("toggle", e => { const d = e.target; if (!d.classList?.contains("fold") || !d.id) return; (S.folds ||= new Set())[d.open ? "add" : "delete"](d.id); }, true);
 document.addEventListener("keydown", e => {
   if (e.key === "Escape" && S.openId) closeHouse();
   if ((e.key === "Enter" || e.key === " ") && e.target.matches?.('[role="button"][data-open]')) { e.preventDefault(); openHouse(e.target.dataset.open); }
