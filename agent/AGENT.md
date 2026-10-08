@@ -143,6 +143,15 @@ no metrics yet and the next run retries it.
 3. If a batch fails on a version conflict (someone edited meanwhile),
    re-export `houses` and re-run steps 4–6 for those houses only.
 
+## 6b. Refresh the app's street map (monthly)
+
+GitHub Actions rebuilds `data/geo/basemap.json` monthly. If its `built` date
+is newer than `basemap_built` in `alerts/state`:
+1. Read the app with the Artifact tool (`action: read`, the app URL).
+2. Republish it with `url` = the app URL, `file_path` = `app/index.html`,
+   and `files: {"basemap.json": "data/geo/basemap.json"}`.
+3. Record the new date in `alerts/state.basemap_built`.
+
 ## 7. Alerts (Gmail)
 
 1. Re-export `houses`, `status` and `unified`.

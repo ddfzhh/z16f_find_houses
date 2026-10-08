@@ -627,7 +627,8 @@ function components(h, med) {
   put("price_pp", rent ? lin(rent / 2, 1800, 3400) : null, "rent");
   const m = med[h.city + "|" + beds];
   put("value", rent && m && m.n >= 3 ? clamp01(0.5 + (m.m - rent) / m.m * 2.5) : null, "rent");
-  const M = h.metrics || {};
+  // approximate locations (no street address) don't earn location points
+  const M = h.location?.approx ? {} : (h.metrics || {});
   put("caltrain", M.caltrain?.walk_min != null ? lin(M.caltrain.walk_min, 8, 40) : null);
   put("size", sqft ? lin(-sqft, -1700, -750) : null, "sqft");
   put("baths", baths != null ? (baths >= 2 ? 1 : baths >= 1.5 ? 0.65 : 0.3) : null, "baths");
