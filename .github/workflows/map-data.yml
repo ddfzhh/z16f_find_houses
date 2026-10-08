@@ -1,0 +1,44 @@
+name: Build map data
+
+# Builds area data for the app from OpenStreetMap (needs open internet, which
+# the agent's environment lacks for Overpass):
+#   data/geo/basemap.json  the app's own street map
+#   data/geo/pois.json     supermarkets, post offices, parks, gyms, cinemas,
+#                          restaurants, Caltrain stations, freeway on-ramps,
+#                          and noise-source lines (tracks, US-101, El Camino)
+# No house data is processed or stored here; that lives in the app database.
+on:
+  schedule:
+    - cron: "17 9 1 * *"   # monthly
+  workflow_dispatch:
+  push:
+    paths:
+      - "scripts/enrich.py"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: map-data
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build map data
+        run: python3 scripts/enrich.py --area
+      - name: Commit results
+        run: |
+          git config user.name "house-hunt-map-data"
+          git config user.email "actions@users.noreply.github.com"
+          git add data/geo
+          if git diff --cached --quiet; then echo "nothing to commit"; exit 0; fi
+          git commit -m "Update map data [automated]"
+          for i in 1 2 3; do
+            git pull --rebase origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}" && exit 0
+            sleep 5
+          done
+          exit 1

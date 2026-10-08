@@ -9,9 +9,15 @@ data/houses/ that needs it:
   4. distance to noise sources (Caltrain tracks, US-101, El Camino Real)
   5. FEMA flood zone
   6. a simple walkability estimate
-It also builds the app's own street map (data/geo/basemap.json) when missing.
+Two modes:
+  --area          build area data (needs OpenStreetMap Overpass; run in GitHub
+                  Actions): data/geo/basemap.json (the app's street map) and
+                  data/geo/pois.json (places + noise-source lines).
+  --houses DIR    enrich house JSON files in DIR in place (run by the search
+                  agent on an export of the app database). Uses the cached
+                  pois.json, so it never calls Overpass.
 
-Usage: python3 scripts/enrich.py [--all] [--basemap] [--refresh-pois]
+House data is never stored in this repo; it lives in the app database.
 """
 import argparse
 import datetime as dt
@@ -26,7 +32,6 @@ import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-HOUSES = ROOT / "data" / "houses"
 GEO = ROOT / "data" / "geo"
 POIS = GEO / "pois.json"
 BASEMAP = GEO / "basemap.json"
@@ -178,17 +183,17 @@ out geom tags;"""
     return lines
 
 
-def load_pois(refresh):
-    fresh = POIS.exists() and not refresh
-    if fresh:
-        data = json.loads(POIS.read_text())
-        age = dt.date.today() - dt.date.fromisoformat(data["fetched"])
-        fresh = age.days < 30
-    if not fresh:
-        data = {"fetched": dt.date.today().isoformat(), "pois": fetch_pois(),
-                "noise": fetch_noise_lines()}
-        GEO.mkdir(parents=True, exist_ok=True)
-        POIS.write_text(json.dumps(data, separators=(",", ":")))
+def build_pois():
+    data = {"fetched": dt.date.today().isoformat(), "pois": fetch_pois(), "noise": fetch_noise_lines()}
+    GEO.mkdir(parents=True, exist_ok=True)
+    POIS.write_text(json.dumps(data, separators=(",", ":")))
+    log("pois.json written", f"{POIS.stat().st_size / 1e6:.1f} MB")
+
+
+def load_pois():
+    if not POIS.exists():
+        raise SystemExit("data/geo/pois.json is missing: run the 'Build map data' GitHub workflow first")
+    data = json.loads(POIS.read_text())
     places = json.loads(PLACES.read_text())
     data["pois"]["shopping"] = places["shopping_districts"]
     if not data["pois"].get("caltrain"):
@@ -290,7 +295,7 @@ def flood_zone(origin):
                                      "inSR": 4326, "spatialRel": "esriSpatialRelIntersects",
                                      "outFields": "FLD_ZONE,ZONE_SUBTY", "returnGeometry": "false",
                                      "f": "json"}))
-    res = http(url, timeout=30, retries=2)
+    res = http(url, timeout=15, retries=1)
     if not res or "features" not in res:
         return {"zone": None, "high_risk": None}
     if not res["features"]:
@@ -391,32 +396,39 @@ def needs_enrich(h, force):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--all", action="store_true", help="re-enrich every house")
-    ap.add_argument("--basemap", action="store_true", help="rebuild the street map")
-    ap.add_argument("--refresh-pois", action="store_true")
+    ap.add_argument("--area", action="store_true", help="rebuild street map and places cache")
+    ap.add_argument("--houses", metavar="DIR", help="enrich house JSON files in DIR in place")
+    ap.add_argument("--all", action="store_true", help="with --houses: re-enrich every house")
     args = ap.parse_args()
 
-    if args.basemap or not BASEMAP.exists():
+    if args.area:
         build_basemap()
+        build_pois()
+    if not args.houses:
+        return
 
     todo = []
-    for f in sorted(HOUSES.glob("*.json")):
+    for f in sorted(Path(args.houses).glob("*.json")):
         h = json.loads(f.read_text())
+        h.setdefault("id", f.stem)
         if h.get("active", True) and needs_enrich(h, args.all):
             todo.append((f, h))
     log(f"{len(todo)} houses to enrich")
     if not todo:
         return
-    data = load_pois(args.refresh_pois)
+    data = load_pois()
     today = dt.date.today().isoformat()
-    for f, h in todo:
-        log("enrich", h["id"])
+    changed = []
+    for i, (f, h) in enumerate(todo, 1):
+        log(f"[{i}/{len(todo)}] {h['id']}")
         loc = geocode(h)
         loc.update({"version": ENRICH_VERSION, "address": h.get("address"), "at": today})
         h["location"] = loc
         h["metrics"] = metrics_for(loc, data)
         h["metrics"]["at"] = today
         f.write_text(json.dumps(h, indent=2, ensure_ascii=False) + "\n")
+        changed.append(h["id"])
+    print(json.dumps({"enriched": changed}))
 
 
 if __name__ == "__main__":

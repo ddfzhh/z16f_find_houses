@@ -1,46 +1,32 @@
 #!/usr/bin/env python3
-"""Merge agent-owned house data (data/houses/*.json) with the app database.
+"""Turn the agent's proposed house changes into ArtifactData batch writes.
 
-The agent exports the app's `houses` collection with ArtifactData
-(`action: list`, `out_dir`), runs this script, then applies the batch files it
-writes with ArtifactData `action: batch`.
+House data lives only in the app database. Each agent run:
+  1. exports `houses` with ArtifactData (`list`, `out_dir`) -> EXPORT/houses/
+     and records each document's version in a JSON file {id: version}
+  2. copies EXPORT/houses to PROPOSED/, edits PROPOSED (new listings, updated
+     facts, last_seen, active) and runs `scripts/enrich.py --houses PROPOSED`
+  3. runs this script, then applies every OUT/batch_<n>.json with
+     ArtifactData `action: batch` (pass the file's entries as `writes`)
 
-Rules (SPEC.md §5):
+Merge rules (SPEC.md §5):
 - Agent fields (title, address, links, evidence, active, last_seen, location,
-  metrics, questions) come from the repo.
-- Facts are merged field by field: the more trusted source wins
+  metrics, questions, ...) come from PROPOSED.
+- Facts merge field by field: the more trusted source wins
   (tour > landlord = person > listing = computed > inferred); on a tie the
-  newer one wins. So a fact someone confirmed in the app is never overwritten.
-- Houses that exist only in the app (pasted by a person) are copied into
-  data/houses/ so the enrichment workflow can locate them.
+  newer one wins. A fact someone confirmed in the app is never overwritten.
+- Only documents that actually changed are written; existing ones are pinned
+  with if_version, so a write never clobbers an edit made meanwhile.
 
-Usage: python3 scripts/sync.py --db-dir DIR --out DIR
-  DIR/houses/<id>.json  as written by ArtifactData out_dir
-Writes OUT/docs/<id>.json (merged documents) and OUT/batch_<n>.json
-(lists of ArtifactData batch entries, at most 40 each).
+Usage: python3 scripts/sync.py --export EXPORT/houses --proposed PROPOSED \
+         --versions versions.json --out OUT
 """
 import argparse
 import json
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
-HOUSES = ROOT / "data" / "houses"
 TRUST = {"tour": 5, "landlord": 4, "person": 4, "listing": 3, "computed": 3, "inferred": 1}
-AGENT_FIELDS = ["title", "address", "city", "zip", "neighborhood", "links", "evidence", "active",
-                "last_seen", "location", "metrics", "questions"]
-
-
-def load_db(db_dir):
-    out = {}
-    for f in sorted((Path(db_dir) / "houses").glob("*.json")):
-        raw = json.loads(f.read_text())
-        # ArtifactData may wrap the document; accept both shapes
-        if isinstance(raw, dict) and "data" in raw and isinstance(raw["data"], dict) and ("version" in raw or "id" in raw):
-            data, version = raw["data"], raw.get("version")
-        else:
-            data, version = raw, raw.get("__version") if isinstance(raw, dict) else None
-        out[f.stem] = (data, version)
-    return out
+PEOPLE_FIELDS = {"added_by"}  # fields only people set; never taken from PROPOSED
 
 
 def better(a, b):
@@ -53,61 +39,60 @@ def better(a, b):
     return str(a.get("at", "")) > str(b.get("at", ""))
 
 
-def merge(db_doc, repo_doc):
-    m = dict(db_doc)
-    for k in AGENT_FIELDS:
-        if k in repo_doc:
-            m[k] = repo_doc[k]
-    facts = dict(db_doc.get("facts") or {})
-    for k, f in (repo_doc.get("facts") or {}).items():
-        if better(f, facts.get(k)):
+def merge(cur, prop):
+    m = dict(cur)
+    for k, v in prop.items():
+        if k not in ("facts", "first_seen") and k not in PEOPLE_FIELDS:
+            m[k] = v
+    facts = dict(cur.get("facts") or {})
+    for k, f in (prop.get("facts") or {}).items():
+        if isinstance(f, dict) and better(f, facts.get(k)):
             facts[k] = f
     m["facts"] = facts
-    m["first_seen"] = min(filter(None, [db_doc.get("first_seen"), repo_doc.get("first_seen")]), default=None)
+    seen = [x for x in (cur.get("first_seen"), prop.get("first_seen")) if x]
+    if seen:
+        m["first_seen"] = min(seen)
     return m
 
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--db-dir", required=True)
+    ap.add_argument("--export", required=True, help="folder of exported house JSON files")
+    ap.add_argument("--proposed", required=True, help="folder of proposed house JSON files")
+    ap.add_argument("--versions", required=True, help="JSON file {doc_id: version} from the export")
     ap.add_argument("--out", required=True)
     args = ap.parse_args()
     out = Path(args.out)
     (out / "docs").mkdir(parents=True, exist_ok=True)
-    db = load_db(args.db_dir)
-    repo = {f.stem: json.loads(f.read_text()) for f in HOUSES.glob("*.json")}
+    versions = json.loads(Path(args.versions).read_text())
+    current = {f.stem: json.loads(f.read_text()) for f in Path(args.export).glob("*.json")}
 
-    entries, created, updated, copied = [], 0, 0, []
-    for hid, r in sorted(repo.items()):
-        if hid in db:
-            cur, version = db[hid]
-            m = merge(cur, r)
-            if m == cur:
+    entries, created, updated = [], [], []
+    for f in sorted(Path(args.proposed).glob("*.json")):
+        hid, prop = f.stem, json.loads(f.read_text())
+        prop["id"] = hid
+        if hid in current:
+            m = merge(current[hid], prop)
+            if m == current[hid]:
                 continue
-            entry = {"op": "update", "collection": "houses", "doc_id": hid}
-            if version:
-                entry["if_version"] = version
-            updated += 1
+            if hid not in versions:
+                raise SystemExit(f"no version recorded for existing house {hid}")
+            entry = {"op": "set", "collection": "houses", "doc_id": hid, "if_version": versions[hid]}
+            updated.append(hid)
         else:
-            m = r
+            m = prop
             entry = {"op": "set", "collection": "houses", "doc_id": hid}
-            created += 1
+            created.append(hid)
         p = out / "docs" / f"{hid}.json"
         p.write_text(json.dumps(m, ensure_ascii=False))
         entry["file_path"] = str(p.resolve())
         entries.append(entry)
 
-    # houses people pasted into the app: bring them into the repo for enrichment
-    for hid, (d, _) in db.items():
-        if hid not in repo:
-            HOUSES.mkdir(parents=True, exist_ok=True)
-            (HOUSES / f"{hid}.json").write_text(json.dumps(d, indent=2, ensure_ascii=False) + "\n")
-            copied.append(hid)
-
+    n = 0
     for i in range(0, len(entries), 40):
-        (out / f"batch_{i // 40 + 1}.json").write_text(json.dumps(entries[i:i + 40], indent=1))
-    print(json.dumps({"create": created, "update": updated, "copied_to_repo": copied,
-                      "batches": (len(entries) + 39) // 40}))
+        n += 1
+        (out / f"batch_{n}.json").write_text(json.dumps(entries[i:i + 40], indent=1))
+    print(json.dumps({"create": created, "update": updated, "batches": n}))
 
 
 if __name__ == "__main__":
