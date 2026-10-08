@@ -13,12 +13,12 @@ web app (or through their own AI assistant). This GitHub repo is where the
 product is **built**; people don't use GitHub day to day.
 
 **Current phase: planning.** The agreed spec is [`SPEC.md`](SPEC.md). No app
-code exists yet. Hosting and tooling are open decisions (`SPEC.md` §9).
+code exists yet. Platform decisions are in `SPEC.md` §9–10 (hosted on claude.ai).
 
 ## People
 
 - **Owner**: repo owner (GitHub: ddfzhh)
-- **Friend**: co-tenant, may use ChatGPT rather than Claude
+- **Friend**: co-tenant, uses claude.ai (shared into the app as an Editor)
 
 ## Repo layout
 

@@ -1,7 +1,7 @@
 # House Hunt — Product Spec
 
-> Status: **planning**. Nothing is built yet. This file records what we have
-> agreed. Hosting and tooling are decided later (§9).
+> Status: **planning complete**. Nothing is built yet. This file records what
+> we have agreed, including the platform decisions in §9.
 
 ## 1. Purpose
 
@@ -32,16 +32,22 @@ The app takes over the first two and makes the third easier.
    exact address (approximate locations look different), plus Caltrain
    stations. Both views share the same filters.
 7. **Ask questions.** "What's new?", "Which places are walkable to Caltrain
-   under $5k?", either in the app or through each person's own AI assistant.
+   under $5k?", either in the app or through each person's own Claude Code.
+8. **Paste a listing.** When either person spots a place anywhere (Zillow,
+   a friend's message, a sign on the street), they paste the link, the
+   listing text or a screenshot into the app. The agent extracts the facts,
+   places the house on the map and scores it. This covers the sites that
+   block automated search.
 
 **Not included:** chat (WeChat or Discord covers that), applying or paying,
 contacting landlords automatically.
 
 ## 3. How people use it
 
-**Setup (once):** sign in, then invite your friend by email. Each person
-writes their requirements. The first search runs immediately. Optionally,
-each person connects their own AI assistant.
+**Setup (once):** the owner shares the app with the friend's claude.ai
+email as an **Editor**. Both open the link, signed in to claude.ai. Each
+person writes their requirements, and the first search runs. Each person's
+Claude Code can then work with the same data.
 
 **Day to day:**
 1. Open the app and look at what's new.
@@ -247,7 +253,7 @@ Each distance becomes a score on a simple curve, e.g. Caltrain within a
 
 | Stage | Trigger | Who | What gets filled in |
 |---|---|---|---|
-| **D: Discover** | Scheduled search | Agent | Listing basics: address, rent, beds/baths, sqft, type, availability, listed amenities, photos, landlord contact, listing date |
+| **D: Discover** | Scheduled search, or a person pastes a listing | Agent | Listing basics: address, rent, beds/baths, sqft, type, availability, listed amenities, photos, landlord contact, listing date |
 | **E: Enrich** | A new house has an address | Code (+ agent) | Coordinates, all location metrics, noise sources, flood zone, rent per person, estimated utilities, price vs. market, scam signals, verification |
 | **Score** | After D/E, after any new fact, or when the unified requirement changes | Code + agent | Fit score, breakdown, unknowns → **landlord questions** |
 | **Q: Inquire** | Status → *interested* | People (the agent drafts the message) | Answers to the questions: fees, utilities, parking, lease terms, application requirements |
@@ -268,15 +274,46 @@ asks a landlord something the listing already answered.
 - Never invents facts. If something is unknown, it records `unknown` and
   creates a question.
 
-## 9. Open decisions
+## 9. Decisions (2026-10-08)
 
-1. **Hosting:** a normal website (recommended, because of the street map and
-   because the friend may use ChatGPT), or claude.ai.
-2. **Map and places data:** OpenStreetMap (free, start here) or Google
-   (more complete, small monthly cost).
-3. **Alerts:** none, a daily email digest, or an instant alert for top
-   matches.
-4. **Sign-in:** Google or an email link.
-5. **Main device:** phone or computer (affects table and map layout).
-6. **Search sources:** many big sites block automated access. Decide how far
-   to go (open web search only, or a paid listings data source).
+| # | Topic | Decision |
+|---|---|---|
+| 1 | Hosting | **claude.ai.** The web app is a private claude.ai artifact shared between the two people. Its built-in database holds houses, facts, notes, votes, status and requirements. Its built-in storage holds tour photos and videos. The search agent is a scheduled **Claude Code routine** on the owner's Claude plan, with no API key. |
+| 2 | Map and places data | **Free sources:** OpenStreetMap map data, the US Census geocoder for addresses, OpenStreetMap places for supermarkets, post offices and theaters, and OpenRouteService for walking and driving times. Each house is calculated once and saved. Google only if gaps appear. |
+| 3 | Alerts | **Daily morning email:** new strong matches, price drops, houses gone. **Instant email** when a house passes every must-have and scores 85+. Sent by the agent. No other notifications. |
+| 4 | Sign-in | **claude.ai accounts.** Access is whoever the app is shared with: the owner, plus the friend as an Editor. |
+| 5 | Device | **Phone first:** cards, map and a sort menu. On a computer: the full table next to the map. |
+| 6 | Listing sources | **Agent web search on a schedule + "paste a listing"** (function 8). Consider a paid listings data source if coverage is weak after 2 weeks. No scraping against sites' terms. |
+
+## 10. What claude.ai hosting means
+
+These follow from decision 1. They change how some things are built, not
+what the app does.
+
+- **Map:** claude.ai pages can't load map images from outside map services.
+  So the app ships **its own street map**: street, rail and park outlines
+  for Redwood City, San Carlos and Menlo Park, downloaded once from
+  OpenStreetMap and drawn by the page. House pins sit at their exact
+  geocoded positions. Expect a clean drawn map, not a satellite-style one.
+- **Both people need a claude.ai account.** The friend is shared in as an
+  **Editor** so he can write notes and votes.
+- **"Ask Claude" inside the page** (e.g. "Is this a good deal?") uses the
+  **asking person's** own Claude usage.
+- **Paste a listing:** the page can't open outside links itself. Pasted text
+  and screenshots are read immediately. A pasted **link** is queued, and the
+  agent opens it on its next run. Links from blocked sites (Zillow, Redfin)
+  need the text or a screenshot instead.
+- **Emails** are sent by the agent through the owner's connected Gmail, to
+  both people.
+- **Network access for the agent:** its cloud environment must allow these
+  sites:
+  - `geocoding.geo.census.gov`
+  - an OpenStreetMap places server (`overpass-api.de`)
+  - `api.openrouteservice.org` (needs a free API key)
+
+  This is a one-time setting in the Claude Code environment. Without it,
+  houses show no location scores.
+- **Storage:** tour uploads are capped at 20 MB each, with a per-app quota.
+  Photos are compressed and videos limited to about 30 seconds.
+- **Lock-in:** if this ever needs to leave claude.ai, the data model and
+  agent carry over. The web page would be rebuilt.
