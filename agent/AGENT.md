@@ -20,8 +20,9 @@ scratchpad directory; call the export folder `$X` below.
 - Distances and travel times come only from `scripts/enrich.py`. Never
   estimate them.
 - Never delete a house. Mark it `"active": false` instead.
-- Commit to the branch you are on, and push with
-  `git push -u origin <branch>`.
+- **House data never goes into the git repo.** It lives only in the app
+  database. The repo holds code and map files (`data/geo/`). You normally
+  have nothing to commit.
 
 ## 1. Read the app's state
 
@@ -31,7 +32,9 @@ Run ArtifactData `list` with `out_dir: $X` on each of these collections:
 - `requests`, with a `query` where `status == "open"`;
 - `get` on `unified/current`, saved to `$X/unified/current.json`.
 
-Note each document's `version` for later writes.
+Note each document's `version` for later writes. For `houses`, save them as
+`$X/house_versions.json` (`{doc_id: version}`) from the list output.
+`scripts/sync.py` needs it.
 
 ## 2. Merge requirements (only when needed)
 
@@ -71,6 +74,9 @@ newer than `unified.based_on[uid]`.
 
 ## 4. Search for listings
 
+First, copy `$X/houses/*.json` to a working folder `$P`. This step and step 5
+edit only `$P`.
+
 Build queries from the unified requirement:
 - cities;
 - 2–3 bedrooms;
@@ -99,8 +105,10 @@ When done, `update` the request with `status: "done"` and a short `reply`.
 - **Normalize the address** before comparing to existing files, so the same
   house isn't added twice from two sites. When a house already exists, add the
   new URL to its `links`.
-- **Write or update `data/houses/<id>.json`** in the format
-  `scripts/import_seed.py` produces. Facts come from the listing text only.
+- **Write or update `$P/<id>.json`** in the same shape as the exported
+  houses: `id, title, address, city, zip, neighborhood, links, evidence,
+  origin: "web-search", active, first_seen, last_seen, facts`. Facts come
+  from the listing text only.
   Set `listing_verified`:
   - `partly` when you saw the listing page or a dated snippet from 2026;
   - `verified` only for a property manager's own page;
@@ -117,23 +125,23 @@ leased or delisted gets `"active": false`.
 
 ## 5. Enrich (location data)
 
-1. Commit `data/houses` and push.
-2. GitHub Actions (`.github/workflows/enrich.yml`) computes locations and
-   commits back. It usually takes 2–6 minutes.
-3. Poll with `git fetch` + `git log HEAD..origin/<branch>` every ~45 s, up to
-   12 minutes.
-4. Then `git pull --rebase`.
+Run `python3 scripts/enrich.py --houses $P`.
 
-If it hasn't finished, continue. The next run syncs the results.
+It fills `location` and `metrics` for houses that are new, changed address,
+or never got them (including houses people pasted into the app). It uses the
+cached places in `data/geo/pois.json` plus the Census geocoder, OSRM routing
+and FEMA. Those sites are allowed in this environment.
+
+Expect about 5–10 seconds per house. If a lookup fails, the house simply has
+no metrics yet and the next run retries it.
 
 ## 6. Sync to the app
 
-1. Re-export `houses` to a fresh `$X2`.
-2. Run `python3 scripts/sync.py --db-dir $X2 --out $X2/out`.
-3. Apply each `batch_N.json` with ArtifactData `batch`. If a batch fails on a
-   version conflict, re-export and re-run.
-4. If sync copied pasted houses into `data/houses/`, commit and push them so
-   they get enriched.
+1. Run `python3 scripts/sync.py --export $X/houses --proposed $P --versions $X/house_versions.json --out $X/out`.
+2. Apply each `$X/out/batch_N.json` with ArtifactData `batch`, passing the
+   file's entries as `writes`.
+3. If a batch fails on a version conflict (someone edited meanwhile),
+   re-export `houses` and re-run steps 4–6 for those houses only.
 
 ## 7. Alerts (Gmail)
 

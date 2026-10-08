@@ -18,8 +18,10 @@ Platform decisions are in `SPEC.md` §9–10 (hosted on claude.ai).
 - **Web app:** https://claude.ai/artifact/44VBjYXFXoAcss5k5GKSnG (source: `app/index.html`)
 - **Search agent:** a scheduled Claude Code routine ("House Hunt search agent",
   6:54 / 12:54 / 18:54 Pacific). Its run book is [`agent/AGENT.md`](agent/AGENT.md).
-- **Location data:** `scripts/enrich.py`, run by GitHub Actions
-  (`.github/workflows/enrich.yml`) whenever `data/houses/` changes.
+- **Data:** all house data, notes, votes and requirements live **only in the
+  app database**, never in this repo. The repo holds code plus area map files
+  (`data/geo/`), rebuilt monthly by GitHub Actions
+  (`.github/workflows/map-data.yml`).
 
 ## People
 
@@ -34,10 +36,8 @@ Platform decisions are in `SPEC.md` §9–10 (hosted on claude.ai).
 | `PLAN.md` | Human-side process: application packet, touring, lease |
 | `app/index.html` | The web app (published as the claude.ai artifact above) |
 | `agent/AGENT.md` | Step-by-step run book for the scheduled search agent |
-| `data/houses/` | Agent-owned house records (facts with provenance + location metrics) |
-| `data/geo/` | Street map, nearby places cache, hand-kept places list |
-| `scripts/` | `enrich.py` (location data), `sync.py` (repo → app DB merge), `score.mjs` (app scoring in Node), `import_seed.py` (one-off) |
-| `data/seed/` | Listings found on 2026-10-07 and starter requirements text |
+| `data/geo/` | Street map, nearby-places cache, hand-kept places list (area data, no houses) |
+| `scripts/` | `enrich.py` (map files / per-house location data), `sync.py` (agent changes → app DB batches), `score.mjs` (app scoring in Node) |
 
 ## Using the live app from Claude Code
 

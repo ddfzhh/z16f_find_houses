@@ -306,14 +306,12 @@ what the app does.
   need the text or a screenshot instead.
 - **Emails** are sent by the agent through the owner's connected Gmail, to
   both people.
-- **Network access for the agent:** its cloud environment must allow these
-  sites:
-  - `geocoding.geo.census.gov`
-  - an OpenStreetMap places server (`overpass-api.de`)
-  - `api.openrouteservice.org` (needs a free API key)
-
-  This is a one-time setting in the Claude Code environment. Without it,
-  houses show no location scores.
+- **Where data lives:** house data, notes, votes and requirements are only
+  in the app database. GitHub holds code and area map files. The agent's
+  environment allows the Census geocoder, Nominatim, OSRM routing and FEMA,
+  so the agent calculates per-house distances itself. OpenStreetMap place
+  data (shops, stations, the street map) is built monthly by GitHub Actions
+  and stored as map files.
 - **Storage:** tour uploads are capped at 20 MB each, with a per-app quota.
   Photos are compressed and videos limited to about 30 seconds.
 - **Lock-in:** if this ever needs to leave claude.ai, the data model and
